@@ -37,7 +37,7 @@ class FunctionalTests(unittest.TestCase):
         self.assertTrue(isinstance(project, jicagile.Project))
 
         # We can add a task.
-        task = project.create_task(u"Create agile tool.", 5)
+        task = project.add_task(u"Create agile tool.", 5)
         self.assertEqual(task["title"], u"Create agile tool.")
         self.assertEqual(task["storypoints"], 5)
 

@@ -21,7 +21,7 @@ class Project(object):
     def __eq__(self, other):
         return self.directory == other.directory
 
-    def create_task(self, title, storypoints):
+    def add_task(self, title, storypoints):
         """Add a task to the backlog."""
         task = dict(title=title, storypoints=storypoints)
         fname = "{}.yml".format(slugify(title))

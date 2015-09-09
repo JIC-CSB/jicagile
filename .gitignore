@@ -1,0 +1,7 @@
+.coverage
+
+*.pyc
+*.swp
+
+.eggs/*
+jicagile.egg-info/*

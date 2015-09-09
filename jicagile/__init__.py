@@ -27,7 +27,7 @@ class Project(object):
         fname = "{}.yml".format(slugify(title))
         fpath = os.path.join(self.backlog_directory, fname)
         with open(fpath, "w") as fh:
-            fh.write(yaml.dump(task))
+            yaml.dump(task, fh)
         return task
 
 

@@ -26,6 +26,11 @@ class NoseTestCommand(TestCommand):
 setup(name="jicagile",
       version=jicagile.__version__,
       packages=["jicagile"],
+      entry_points = {
+        "console_scripts": [
+            "add-task=jicagile.command_line:add_task",
+        ],
+      },
       cmdclass={"test": NoseTestCommand},
       install_requires=["pyyaml", "python-slugify"],
       tests_require=["nose", "coverage"],

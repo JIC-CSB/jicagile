@@ -51,8 +51,27 @@ class FunctionalTests(unittest.TestCase):
 
     def test_project_initialisation(self):
         import jicagile
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        current_sprint_dir = os.path.join(TMP_DIR, "current")
+        current_todo_dir = os.path.join(TMP_DIR, "current", "todo")
+        current_done_dir = os.path.join(TMP_DIR, "current", "done")
+        self.assertFalse(os.path.isdir(backlog_dir))
+        self.assertFalse(os.path.isdir(current_sprint_dir))
+        self.assertFalse(os.path.isdir(current_todo_dir))
+        self.assertFalse(os.path.isdir(current_done_dir))
+
         project = jicagile.Project(TMP_DIR)
         self.assertEqual(project.directory, TMP_DIR)
+        self.assertEqual(project.backlog_directory, os.path.join(TMP_DIR, "backlog"))
+        self.assertEqual(project.current_sprint_directory, os.path.join(TMP_DIR, "current"))
+        self.assertEqual(project.current_todo_directory, os.path.join(TMP_DIR, "current", "todo"))
+        self.assertEqual(project.current_done_directory, os.path.join(TMP_DIR, "current", "done"))
+
+        self.assertTrue(os.path.isdir(backlog_dir))
+        self.assertTrue(os.path.isdir(current_sprint_dir))
+        self.assertTrue(os.path.isdir(current_todo_dir))
+        self.assertTrue(os.path.isdir(current_done_dir))
 
     def test_creation_of_an_existing_project(self):
         import jicagile

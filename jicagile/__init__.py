@@ -15,8 +15,17 @@ class Project(object):
     def __init__(self, directory):
         self.directory = directory
         self.backlog_directory = os.path.join(directory, "backlog")
+        self.current_sprint_directory = os.path.join(directory, "current")
+        self.current_todo_directory = os.path.join(self.current_sprint_directory, "todo")
+        self.current_done_directory = os.path.join(self.current_sprint_directory, "done")
         if not os.path.isdir(self.backlog_directory):
             os.mkdir(self.backlog_directory)
+        if not os.path.isdir(self.current_sprint_directory):
+            os.mkdir(self.current_sprint_directory)
+        if not os.path.isdir(self.current_todo_directory):
+            os.mkdir(self.current_todo_directory)
+        if not os.path.isdir(self.current_done_directory):
+            os.mkdir(self.current_done_directory)
 
     def __eq__(self, other):
         return self.directory == other.directory

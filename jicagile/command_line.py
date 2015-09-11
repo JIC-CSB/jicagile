@@ -10,7 +10,7 @@ import jicagile
 def add_task_cmd(args):
     """Add a task to the backlog."""
     project = jicagile.Project(".")
-    project.add_task(args.title, args.storypoints)
+    project.add_task(args.title, args.storypoints, current=args.current)
 
 
 def add_task_args(subparser):
@@ -24,8 +24,11 @@ def add_task_args(subparser):
 def list_tasks_cmd(args):
     """List the backlog tasks."""
     project = jicagile.Project(".")
-    fpaths = [os.path.join(project.backlog_directory, fn)
-              for fn in os.listdir(project.backlog_directory)
+    directory = project.backlog_directory
+    if args.current:
+        directory = project.current_todo_directory
+    fpaths = [os.path.join(directory, fn)
+              for fn in os.listdir(directory)
               if fn.endswith(".yml") or fn.endswith(".yaml")]
     tasks = [jicagile.task_from_file(fp) for fp in fpaths]
 
@@ -33,7 +36,11 @@ def list_tasks_cmd(args):
     if args.sort == "t":
         sortkey = "title"
 
-    print("## Backlog\n")
+    if args.current:
+        print("## Current sprint\n")
+    else:
+        print("## Backlog\n")
+
     for t in sorted(tasks, key=itemgetter(sortkey), reverse=args.reverse):
         print("- {title} [{storypoints}]".format(**t))
 
@@ -52,6 +59,11 @@ def list_tasks_args(subparser):
 
 def main():
     parser = argparse.ArgumentParser(prog="agl")
+    parser.add_argument("-c", "--current",
+                        default=False,
+                        action="store_true",
+                        help="Act on current sprint")
+
     subparser = parser.add_subparsers(dest="cmd")
 
     add_task_args(subparser)

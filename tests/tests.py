@@ -36,7 +36,7 @@ class FunctionalTests(unittest.TestCase):
         self.assertTrue(os.path.isdir(backlog_dir))
         self.assertTrue(isinstance(project, jicagile.Project))
 
-        # We can add a task.
+        # We can add a task to the backlog.
         task = project.add_task(u"Create agile tool.", 5)
         self.assertEqual(task["title"], u"Create agile tool.")
         self.assertEqual(task["storypoints"], 5)
@@ -48,6 +48,15 @@ class FunctionalTests(unittest.TestCase):
         # The task is in yaml file format.
         task_from_file = jicagile.task_from_file(fpath)
         self.assertEqual(task, task_from_file)
+
+        # It is also possible to add a task to the current sprint.
+        task = project.add_task(u"Say hello now.", 1, current=True)
+        self.assertEqual(task["title"], u"Say hello now.")
+        self.assertEqual(task["storypoints"], 1)
+
+        # The task has also been written to file.
+        fpath = os.path.join(TMP_DIR, "current", "todo", "say-hello-now.yml")
+        self.assertTrue(os.path.isfile(fpath))
 
     def test_project_initialisation(self):
         import jicagile

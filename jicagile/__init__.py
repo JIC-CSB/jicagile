@@ -30,11 +30,13 @@ class Project(object):
     def __eq__(self, other):
         return self.directory == other.directory
 
-    def add_task(self, title, storypoints):
+    def add_task(self, title, storypoints, current=False):
         """Add a task to the backlog."""
         task = dict(title=title, storypoints=storypoints)
         fname = "{}.yml".format(slugify(title))
         fpath = os.path.join(self.backlog_directory, fname)
+        if current:
+            fpath = os.path.join(self.current_todo_directory, fname)
         with open(fpath, "w") as fh:
             yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
         return task

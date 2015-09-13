@@ -30,7 +30,7 @@ def list_tasks_cmd(args):
     fpaths = [os.path.join(directory, fn)
               for fn in os.listdir(directory)
               if fn.endswith(".yml") or fn.endswith(".yaml")]
-    tasks = [jicagile.task_from_file(fp) for fp in fpaths]
+    tasks = [jicagile.Task.from_file(fp) for fp in fpaths]
 
     sortkey = "storypoints"
     if args.sort == "t":

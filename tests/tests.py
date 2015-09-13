@@ -14,6 +14,16 @@ class UnitTests(unittest.TestCase):
         import jicagile
         self.assertTrue(isinstance(jicagile.__version__, str))
 
+    def test_task_fname(self):
+        import jicagile
+        task = jicagile.Task(" Do something great! ", 3)
+        self.assertEqual(task.fname, "do-something-great.yml")
+
+    def test_task_fpath(self):
+        import jicagile
+        task = jicagile.Task(" Do something great! ", 3)
+        self.assertEqual(task.fpath("/tmp"), "/tmp/do-something-great.yml")
+
 
 class FunctionalTests(unittest.TestCase):
 
@@ -46,7 +56,7 @@ class FunctionalTests(unittest.TestCase):
         self.assertTrue(os.path.isfile(fpath))
 
         # The task is in yaml file format.
-        task_from_file = jicagile.task_from_file(fpath)
+        task_from_file = jicagile.Task.from_file(fpath)
         self.assertEqual(task, task_from_file)
 
         # It is also possible to add a task to the current sprint.
@@ -72,10 +82,14 @@ class FunctionalTests(unittest.TestCase):
 
         project = jicagile.Project(TMP_DIR)
         self.assertEqual(project.directory, TMP_DIR)
-        self.assertEqual(project.backlog_directory, os.path.join(TMP_DIR, "backlog"))
-        self.assertEqual(project.current_sprint_directory, os.path.join(TMP_DIR, "current"))
-        self.assertEqual(project.current_todo_directory, os.path.join(TMP_DIR, "current", "todo"))
-        self.assertEqual(project.current_done_directory, os.path.join(TMP_DIR, "current", "done"))
+        self.assertEqual(project.backlog_directory,
+                         os.path.join(TMP_DIR, "backlog"))
+        self.assertEqual(project.current_sprint_directory,
+                         os.path.join(TMP_DIR, "current"))
+        self.assertEqual(project.current_todo_directory,
+                         os.path.join(TMP_DIR, "current", "todo"))
+        self.assertEqual(project.current_done_directory,
+                         os.path.join(TMP_DIR, "current", "done"))
 
         self.assertTrue(os.path.isdir(backlog_dir))
         self.assertTrue(os.path.isdir(current_sprint_dir))
@@ -88,6 +102,16 @@ class FunctionalTests(unittest.TestCase):
         p1 = jicagile.Project(TMP_DIR)
         p2 = jicagile.Project(TMP_DIR)
         self.assertEqual(p1, p2)
+
+    def test_from_file(self):
+        import jicagile
+        fpath = os.path.join(TMP_DIR, "test.yml")
+        with open(fpath, "w") as fh:
+            fh.write("""---\ntitle: Test\nstorypoints: 3""")
+        task = jicagile.Task.from_file(fpath)
+        expected = jicagile.Task("Test", 3)
+        self.assertEqual(task, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

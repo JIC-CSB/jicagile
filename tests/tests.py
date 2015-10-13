@@ -138,9 +138,10 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(task, task_from_file)
 
         # It is also possible to add a task to the current sprint.
-        task = project.add_task(u"Say hello now.", 1, current=True)
+        task = project.add_task(u"Say hello now.", 1, primary_contact="TO", current=True)
         self.assertEqual(task["title"], u"Say hello now.")
         self.assertEqual(task["storypoints"], 1)
+        self.assertEqual(task["primary_contact"], "TO")
 
         # The task has also been written to file.
         fpath = os.path.join(TMP_DIR, "current", "todo", "say-hello-now.yml")

@@ -94,9 +94,10 @@ class Project(object):
         """Return the path to the current 'done' directory."""
         return os.path.join(self.current_sprint_directory, "done")
 
-    def add_task(self, title, storypoints, current=False):
+    def add_task(self, title, storypoints,
+                 primary_contact=None, current=False):
         """Add a task to the backlog."""
-        task = Task(title=title, storypoints=storypoints)
+        task = Task(title, storypoints, primary_contact=primary_contact)
         directory = self.backlog_directory
         if current:
             directory = self.current_todo_directory

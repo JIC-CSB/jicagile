@@ -2,6 +2,7 @@
 
 import os
 import os.path
+from operator import itemgetter
 
 import yaml
 from slugify import slugify
@@ -20,7 +21,8 @@ class Task(dict):
     @staticmethod
     def from_file(fpath):
         """Return a task read in from file."""
-        return yaml.load(file(fpath))
+        data = yaml.load(file(fpath))
+        return Task(**data)
 
     @property
     def fname(self):
@@ -30,6 +32,29 @@ class Task(dict):
     def fpath(self, directory):
         """Return the task file path."""
         return os.path.join(directory, self.fname)
+
+
+class TaskCollection(list):
+    """Class for storing a collection of tasks."""
+
+    @property
+    def primary_contacts(self):
+        """Return set of primary contacts."""
+        return set([item["primary_contact"] for item in self])
+
+    @property
+    def storypoints(self):
+        """Return the number of story points in the task collection."""
+        return sum([item["storypoints"] for item in self])
+
+    def tasks_for(self, primary_contact, sort_by="storypoints", reverse=False):
+        """Return list of tasks for a primary contact."""
+        key = itemgetter(sort_by)
+        task_collection = TaskCollection()
+        for task in sorted(self, key=key, reverse=reverse):
+            if task["primary_contact"] == primary_contact:
+                task_collection.append(task)
+        return task_collection
 
 
 class Project(object):

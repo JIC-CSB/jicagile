@@ -2,7 +2,6 @@
 
 import os
 import argparse
-from operator import itemgetter
 
 import jicagile
 
@@ -30,19 +29,25 @@ def list_tasks_cmd(args):
     fpaths = [os.path.join(directory, fn)
               for fn in os.listdir(directory)
               if fn.endswith(".yml") or fn.endswith(".yaml")]
-    tasks = [jicagile.Task.from_file(fp) for fp in fpaths]
+    tasks = jicagile.TaskCollection()
+    for fp in fpaths:
+        tasks.append(jicagile.Task.from_file(fp))
 
-    sortkey = "storypoints"
+    sort_by = "storypoints"
     if args.sort == "t":
-        sortkey = "title"
+        sort_by = "title"
 
     if args.current:
-        print("## Current sprint\n")
+        print("## Current sprint [{}]\n".format(tasks.storypoints))
     else:
-        print("## Backlog\n")
+        print("## Backlog [{}]\n".format(tasks.storypoints))
 
-    for t in sorted(tasks, key=itemgetter(sortkey), reverse=args.reverse):
-        print("- {title} [{storypoints}]".format(**t))
+    for pcontact in tasks.primary_contacts:
+        pcontact_tasks = tasks.tasks_for(pcontact, sort_by, args.reverse)
+        print("### {}' tasks [{}]\n".format(pcontact,
+                                            pcontact_tasks.storypoints))
+        for t in pcontact_tasks:
+            print("- {title} [{storypoints}]".format(**t))
 
 
 def list_tasks_args(subparser):

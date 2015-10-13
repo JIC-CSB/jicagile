@@ -58,7 +58,8 @@ def list_tasks_args(subparser):
 
 
 def main():
-    parser = argparse.ArgumentParser(prog="agl")
+    epilog = "Version {}".format(jicagile.__version__)
+    parser = argparse.ArgumentParser(prog="agl", epilog=epilog)
     parser.add_argument("-c", "--current",
                         default=False,
                         action="store_true",

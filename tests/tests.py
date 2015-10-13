@@ -25,6 +25,14 @@ class UnitTests(unittest.TestCase):
         self.assertEqual(task.fpath("/tmp"), "/tmp/do-something-great.yml")
 
 
+class PrimaryContactUnitTests(unittest.TestCase):
+
+    def test_task_can_be_initialised_with_primary_contact(self):
+        import jicagile
+        task = jicagile.Task(" Do something great! ", 3, primary_contact="TO")
+        self.assertEqual(task["primary_contact"], "TO")
+
+
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
@@ -109,8 +117,8 @@ class FunctionalTests(unittest.TestCase):
         with open(fpath, "w") as fh:
             fh.write("""---\ntitle: Test\nstorypoints: 3""")
         task = jicagile.Task.from_file(fpath)
-        expected = jicagile.Task("Test", 3)
-        self.assertEqual(task, expected)
+        self.assertEqual(task["title"], "Test")
+        self.assertEqual(task["storypoints"], 3)
 
 
 if __name__ == "__main__":

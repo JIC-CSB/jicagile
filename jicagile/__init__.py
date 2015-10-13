@@ -6,15 +6,16 @@ import os.path
 import yaml
 from slugify import slugify
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 class Task(dict):
     """Task."""
 
-    def __init__(self, title, storypoints):
+    def __init__(self, title, storypoints, primary_contact=None):
         self["title"] = title
         self["storypoints"] = storypoints
+        self["primary_contact"] = primary_contact
 
     @staticmethod
     def from_file(fpath):

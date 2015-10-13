@@ -42,6 +42,18 @@ class FunctionalTests(unittest.TestCase):
         task_from_file = jicagile.Task.from_file(fpath)
         self.assertEqual(task, task_from_file)
 
+        # It is possible to edit the task.
+        project.edit_task(fpath, storypoints=1)
+        task_from_file = jicagile.Task.from_file(fpath)
+        self.assertEqual(task_from_file["storypoints"], 1)
+        project.edit_task(fpath, title="Create a fit-for-purpose agile tool")
+        task_from_file = jicagile.Task.from_file(fpath)
+        self.assertEqual(task_from_file["title"],
+                         "Create a fit-for-purpose agile tool")
+        project.edit_task(fpath, primary_contact="TO")
+        task_from_file = jicagile.Task.from_file(fpath)
+        self.assertEqual(task_from_file["primary_contact"], "TO")
+
         # It is also possible to add a task to the current sprint.
         task = project.add_task(u"Say hello now.", 1,
                                 primary_contact="TO", current=True)

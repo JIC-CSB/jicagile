@@ -144,3 +144,17 @@ class Project(object):
         with open(task.fpath(directory), "w") as fh:
             yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
         return task
+
+    def edit_task(self, fpath, title=None,
+                  storypoints=None, primary_contact=None):
+        """Edit an exiting task."""
+        task = Task.from_file(fpath)
+        if title is not None:
+            task["title"] = title
+        if storypoints is not None:
+            task["storypoints"] = storypoints
+        if primary_contact is not None:
+            task["primary_contact"] = primary_contact
+        with open(fpath, "w") as fh:
+            yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
+        return task

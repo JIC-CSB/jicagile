@@ -25,6 +25,26 @@ def add_task_args(subparser):
                         help="Primary contact")
 
 
+def edit_task_cmd(args):
+    """Edit a task (file)."""
+    project = jicagile.Project(".")
+    project.edit_task(args.fpath,
+                      title=args.title,
+                      storypoints=args.storypoints,
+                      primary_contact=args.primary_contact)
+
+
+def edit_task_args(subparser):
+    """Argument parsing for edit command."""
+    parser = subparser.add_parser("edit", help=edit_task_cmd.__doc__)
+    parser.add_argument("fpath", help="Path to task file")
+    parser.add_argument("-t", "--title", help="Task description")
+    parser.add_argument("-s", "--storypoints", type=int, choices=(1, 3, 5, 8),
+                        help="Number of story points")
+    parser.add_argument("-p", "--primary_contact", choices=TEAM.lookups,
+                        help="Primary contact")
+
+
 def list_tasks_cmd(args):
     """List the backlog tasks."""
     project = jicagile.Project(".")
@@ -84,11 +104,14 @@ def main():
     subparser = parser.add_subparsers(dest="cmd")
 
     add_task_args(subparser)
+    edit_task_args(subparser)
     list_tasks_args(subparser)
 
     args = parser.parse_args()
 
     if args.cmd == "add":
         add_task_cmd(args)
+    elif args.cmd == "edit":
+        edit_task_cmd(args)
     elif args.cmd == "list":
         list_tasks_cmd(args)

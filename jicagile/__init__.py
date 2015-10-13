@@ -67,8 +67,15 @@ class Team(dict):
             self.first_name = first_name
             self.last_name = last_name
 
+    @property
+    def lookups(self):
+        """Return set of lookup aliases in the team."""
+        return set(self.keys())
+
     def add_member(self, lookup, first_name, last_name):
         """Add a team member."""
+        if lookup in self:
+            raise(KeyError("Lookup {} already in use".format(lookup)))
         self[lookup] = self.Member(lookup, first_name, last_name)
 
     def member(self, lookup):

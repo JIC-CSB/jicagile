@@ -7,6 +7,7 @@ HERE = os.path.dirname(__file__)
 DATA_DIR = os.path.join(HERE, 'data')
 TMP_DIR = os.path.join(HERE, 'tmp')
 
+
 class FunctionalTests(unittest.TestCase):
 
     def setUp(self):
@@ -42,7 +43,8 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(task, task_from_file)
 
         # It is also possible to add a task to the current sprint.
-        task = project.add_task(u"Say hello now.", 1, primary_contact="TO", current=True)
+        task = project.add_task(u"Say hello now.", 1,
+                                primary_contact="TO", current=True)
         self.assertEqual(task["title"], u"Say hello now.")
         self.assertEqual(task["storypoints"], 1)
         self.assertEqual(task["primary_contact"], "TO")
@@ -95,6 +97,21 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(task["title"], "Test")
         self.assertEqual(task["storypoints"], 3)
 
+    def test_team_from_file(self):
+        import jicagile
+        fpath = os.path.join(TMP_DIR, "team.yml")
+        with open(fpath, "w") as fh:
+            fh.write("""---
+- lookup: TO
+  first_name: Tjelvar
+  last_name: Olsson
+- lookup: MH
+  first_name: Matthew
+  last_name: Hartley
+""")
+        team = jicagile.Team.from_file(fpath)
+        self.assertEqual(len(team), 2)
+        self.assertEqual(team.lookups, set(["TO", "MH"]))
 
 if __name__ == "__main__":
     unittest.main()

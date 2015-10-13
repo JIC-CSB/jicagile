@@ -67,6 +67,20 @@ class Team(dict):
             self.first_name = first_name
             self.last_name = last_name
 
+    @staticmethod
+    def from_yaml(yaml_str):
+        """Return a team created from a yaml string."""
+        data = yaml.load(yaml_str)
+        team = Team()
+        for item in data:
+            team.add_member(**item)
+        return team
+
+    @staticmethod
+    def from_file(fpath):
+        """Return a team read in from file."""
+        return Team.from_yaml(file(fpath))
+
     @property
     def lookups(self):
         """Return set of lookup aliases in the team."""

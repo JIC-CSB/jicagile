@@ -36,5 +36,20 @@ class TeamUnitTests(unittest.TestCase):
         team.add_member(lookup="MH", first_name="Matthew", last_name="Hartley")
         self.assertEqual(team.lookups, set(["TO", "MH"]))
 
+    def test_from_yaml(self):
+        import jicagile
+        yaml = """---
+- lookup: TO
+  first_name: Tjelvar
+  last_name: Olsson
+- lookup: MH
+  first_name: Matthew
+  last_name: Hartley
+"""
+        team = jicagile.Team.from_yaml(yaml)
+        self.assertEqual(len(team), 2)
+        self.assertEqual(team.lookups, set(["TO", "MH"]))
+
+
 if __name__ == "__main__":
     unittest.main()

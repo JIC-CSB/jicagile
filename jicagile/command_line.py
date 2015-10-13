@@ -5,11 +5,14 @@ import argparse
 
 import jicagile
 
+TEAM = jicagile.Team.from_file(".team.yml")
 
 def add_task_cmd(args):
     """Add a task to the backlog."""
     project = jicagile.Project(".")
-    project.add_task(args.title, args.storypoints, current=args.current)
+    project.add_task(args.title, args.storypoints,
+                     primary_contact=args.primary_contact,
+                     current=args.current)
 
 
 def add_task_args(subparser):
@@ -18,6 +21,8 @@ def add_task_args(subparser):
     parser.add_argument("title", help="Task description")
     parser.add_argument("storypoints", type=int, choices=(1, 3, 5, 8),
                         help="Number of story points")
+    parser.add_argument("-p", "--primary_contact", choices=TEAM.lookups,
+                        help="Primary contact")
 
 
 def list_tasks_cmd(args):
@@ -44,10 +49,16 @@ def list_tasks_cmd(args):
 
     for pcontact in tasks.primary_contacts:
         pcontact_tasks = tasks.tasks_for(pcontact, sort_by, args.reverse)
-        print("### {}' tasks [{}]\n".format(pcontact,
+        try:
+            name = TEAM.member(pcontact).first_name
+        except KeyError:
+            name = pcontact
+        print("### {}'s tasks [{}]\n".format(name,
                                             pcontact_tasks.storypoints))
         for t in pcontact_tasks:
             print("- {title} [{storypoints}]".format(**t))
+
+        print("")
 
 
 def list_tasks_args(subparser):

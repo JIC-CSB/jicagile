@@ -67,7 +67,12 @@ def list_tasks_cmd(args):
     else:
         print("## Backlog [{}]\n".format(tasks.storypoints))
 
-    for pcontact in tasks.primary_contacts:
+    # Logic to choose set of team members to display tasks for.
+    primary_contacts = tasks.primary_contacts
+    if args.primary_contact:
+        primary_contacts = [args.primary_contact,]
+
+    for pcontact in primary_contacts:
         pcontact_tasks = tasks.tasks_for(pcontact, sort_by, args.reverse)
         try:
             name = TEAM.member(pcontact).first_name
@@ -91,6 +96,9 @@ def list_tasks_args(subparser):
                         default=False,
                         action="store_true",
                         help="Reverse order")
+    parser.add_argument("-p", "--primary_contact", choices=TEAM.lookups,
+                        default=None,
+                        help="Only show tasks for primary contact")
 
 
 def main():

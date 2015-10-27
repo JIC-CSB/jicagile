@@ -7,7 +7,7 @@ from operator import itemgetter
 import yaml
 from slugify import slugify
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 class Task(dict):

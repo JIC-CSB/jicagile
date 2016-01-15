@@ -51,6 +51,8 @@ def list_tasks_cmd(args):
     directory = project.backlog_directory
     if args.current:
         directory = project.current_todo_directory
+    elif args.directory:
+        directory = args.directory
     fpaths = [os.path.join(directory, fn)
               for fn in os.listdir(directory)
               if fn.endswith(".yml") or fn.endswith(".yaml")]
@@ -64,6 +66,8 @@ def list_tasks_cmd(args):
 
     if args.current:
         print("## Current sprint [{}]\n".format(tasks.storypoints))
+    elif args.directory:
+        print("## {} [{}]\n".format(args.directory, tasks.storypoints))
     else:
         print("## Backlog [{}]\n".format(tasks.storypoints))
 
@@ -99,6 +103,9 @@ def list_tasks_args(subparser):
     parser.add_argument("-p", "--primary_contact", choices=TEAM.lookups,
                         default=None,
                         help="Only show tasks for primary contact")
+    parser.add_argument("-d", "--directory",
+                        default=None,
+                        help="List tasks from specific directory")
 
 
 def main():
@@ -122,4 +129,6 @@ def main():
     elif args.cmd == "edit":
         edit_task_cmd(args)
     elif args.cmd == "list":
+        if args.current and args.directory:
+            parser.error("-c and -d options are mutally exclusive")
         list_tasks_cmd(args)

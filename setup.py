@@ -28,7 +28,7 @@ setup(name="jicagile",
       packages=["jicagile"],
       entry_points = {
         "console_scripts": [
-            "agl=jicagile.command_line:main",
+            "agl=jicagile.cli:main",
         ],
       },
       cmdclass={"test": NoseTestCommand},

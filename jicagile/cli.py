@@ -91,3 +91,9 @@ class CLI(object):
                                                                pcontact_tasks.storypoints))
             for t in pcontact_tasks:
                 sys.stdout.write("- {title} [{storypoints}]\n".format(**t))
+
+
+def main():
+    cli = CLI()
+    args = cli.parse_args(sys.argv[1:])
+    cli.run(args)

@@ -37,6 +37,16 @@ class Task(dict):
 class TaskCollection(list):
     """Class for storing a collection of tasks."""
 
+    @classmethod
+    def from_directory(cls, directory):
+        task_collection = cls()
+        fpaths = [os.path.join(directory, fn)
+                  for fn in os.listdir(directory)
+                  if fn.endswith(".yml") or fn.endswith(".yaml")]
+        for fp in fpaths:
+            task_collection.append(Task.from_file(fp))
+        return task_collection
+
     @property
     def primary_contacts(self):
         """Return set of primary contacts."""

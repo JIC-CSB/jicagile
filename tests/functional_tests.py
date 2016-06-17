@@ -140,6 +140,29 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(team.lookups, set(["TO", "MH"]))
 
 
+class TaskCollectionFunctionalTests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
+
+    def test_from_directory(self):
+        import jicagile
+        project = jicagile.Project(TMP_DIR)
+        task1 = project.add_task("Basic task", 1)
+        task2 = project.add_task("Complex task", 8)
+        expected = jicagile.TaskCollection()
+        expected.extend([task1, task2])
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        self.assertEqual(jicagile.TaskCollection.from_directory(backlog_dir),
+                         expected)
+
+
+
 class CLITests(unittest.TestCase):
 
     def setUp(self):

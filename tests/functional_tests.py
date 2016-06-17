@@ -319,6 +319,24 @@ class CLIFunctionalTests(unittest.TestCase):
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
+        team = jicagile.Team()
+        team.add_member("MH", "Matthew", "Hartley")
+        cli.team = team
+        args = CLI.parse_args(["list", "todo"])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# TODO [9]
+
+## Matthew's tasks [8]
+
+- Management stuff [8]
+
+## TO's tasks [1]
+
+- Have fun [1]
+"""
+
         args = CLI.parse_args(["list", "todo", "-p", "TO"])
         with capture_sys_output() as (stdout, stderr):
             cli.run_command("list", args)

@@ -79,6 +79,8 @@ class CLI(object):
         for pcontact in primary_contacts:
             pcontact_tasks = tasks.tasks_for(pcontact)
             name = pcontact
+            if pcontact in self.project.team:
+                name = self.project.team[pcontact].first_name
             sys.stdout.write("\n## {}'s tasks [{}]\n\n".format(name,
                                                                pcontact_tasks.storypoints))
             for t in pcontact_tasks:

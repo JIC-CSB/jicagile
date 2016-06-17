@@ -25,6 +25,13 @@ class CLI(object):
                                 help="Add to current sprint")
         add_parser.add_argument("-p", "--primary-contact", help="Primary contact")
 
+        # The "edit" command.
+        edit_parser = subparsers.add_parser("edit", help="Edit a task")
+        edit_parser.add_argument("fpath", help="Path to task file")
+        edit_parser.add_argument("-t", "--title", help="Task description")
+        edit_parser.add_argument("-s", "--storypoints", type=int, help="Number of storypoints")
+        edit_parser.add_argument("-p", "--primary-contact", help="Primary contact")
+
         return parser.parse_args(args)
 
     def run_command(self, command, args):
@@ -38,3 +45,10 @@ class CLI(object):
                               args.storypoints,
                               args.primary_contact,
                               args.current)
+
+    def edit(self, args):
+        """Edit a task."""
+        self.project.edit_task(args.fpath,
+                               args.title,
+                               args.storypoints,
+                               args.primary_contact)

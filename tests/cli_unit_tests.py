@@ -61,5 +61,21 @@ class AddCommandUnitTests(unittest.TestCase):
         args = CLI.parse_args(["add", "-c", "Simple task", "1"])
         self.assertTrue(args.current)
 
+
+class EditCommandUnitTests(unittest.TestCase):
+
+    def test_basic_usage(self):
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["edit", "fpath",
+                               "-t", "Simple task",
+                               "-s", "1",
+                               "-p", "TO"])
+        self.assertEqual(args.command, "edit")
+        self.assertEqual(args.fpath, "fpath")
+        self.assertEqual(args.title, "Simple task")
+        self.assertEqual(args.storypoints, 1)
+        self.assertEqual(args.primary_contact, "TO")
+
+
 if __name__ == "__main__":
     unittest.main()

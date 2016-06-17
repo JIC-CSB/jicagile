@@ -165,5 +165,28 @@ class CLITests(unittest.TestCase):
         self.assertEqual(task_from_file["title"], "Basic task")
         self.assertEqual(task_from_file["storypoints"], 1)
 
+    def test_edit(self):
+        import jicagile
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["add", "Basic task", "1"])
+        cli = CLI(project_directory=TMP_DIR)
+        cli.run_command("add", args)
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        task_fpath = os.path.join(backlog_dir, "basic-task.yml")
+
+        args = CLI.parse_args(["edit",
+                              task_fpath,
+                              "-t", "Complicated task",
+                              "-s", "8",
+                              "-p", "TO"])
+        cli.run_command("edit", args)
+
+        task_from_file = jicagile.Task.from_file(task_fpath)
+        self.assertEqual(task_from_file["title"], "Complicated task")
+        self.assertEqual(task_from_file["storypoints"], 8)
+        self.assertEqual(task_from_file["primary_contact"], "TO")
+
+
 if __name__ == "__main__":
     unittest.main()

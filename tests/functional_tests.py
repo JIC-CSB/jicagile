@@ -124,6 +124,24 @@ class ProjectFunctionalTests(unittest.TestCase):
         p2 = jicagile.Project(TMP_DIR)
         self.assertEqual(p1, p2)
 
+    def test_team(self):
+        import jicagile
+
+        fpath = os.path.join(TMP_DIR, "team.yml")
+        with open(fpath, "w") as fh:
+            fh.write("""---
+- lookup: TO
+  first_name: Tjelvar
+  last_name: Olsson
+- lookup: MH
+  first_name: Matthew
+  last_name: Hartley
+""")
+
+        project = jicagile.Project(TMP_DIR, team_fpath=fpath)
+        self.assertEqual(len(project.team), 2)
+        self.assertEqual(project.team.lookups, set(["TO", "MH"]))
+
 
 class TaskFunctionalTests(unittest.TestCase):
 

@@ -113,7 +113,8 @@ class Team(dict):
 class Project(object):
     """Agile project management class."""
 
-    def __init__(self, directory):
+    def __init__(self, directory, team_fpath=".team.yml"):
+        self.team = Team.from_file(team_fpath)
         self.directory = directory
         if not os.path.isdir(self.backlog_directory):
             os.mkdir(self.backlog_directory)

@@ -71,6 +71,9 @@ class CLI(object):
         if args.directory == "done":
             directory = self.project.current_done_directory
 
+        if directory.endswith("/"):
+            directory = directory[:-1]
+
         tasks = jicagile.TaskCollection.from_directory(directory)
 
         sys.stdout.write("# {} [{}]\n".format(os.path.basename(directory).upper(),

@@ -357,6 +357,26 @@ class CLIFunctionalTests(unittest.TestCase):
             expected = """# DONE [0]\n"""
             self.assertEqual(text, expected, "\n" + text + expected)
 
+    def test_list_backlog_with_trailing_slash(self):
+        import jicagile
+        from jicagile.cli import CLI
+        cli = CLI(project_directory=TMP_DIR)
+        args = cli.parse_args(["add", "Basic task", "1"])
+        cli.run(args)
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog/")
+        args = cli.parse_args(["list", backlog_dir])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run(args)
+            text = stdout.getvalue()
+            expected = """# BACKLOG [1]
+
+## None's tasks [1]
+
+- Basic task [1]
+"""
+            self.assertEqual(text, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

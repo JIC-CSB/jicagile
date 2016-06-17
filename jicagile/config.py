@@ -58,6 +58,6 @@ class Themes(_Config):
 
     class Member(object):
         """Class representing a theme."""
-        def __init__(self, lookup, name):
+        def __init__(self, lookup, description):
             self.lookup = lookup
-            self.name = name
+            self.description = description

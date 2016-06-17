@@ -12,11 +12,11 @@ class ThemeUnitTests(unittest.TestCase):
         import jicagile.config
         theme = jicagile.config.Themes.Member("img", "bioimage analysis")
         self.assertEqual(theme.lookup, "img")
-        self.assertEqual(theme.name, "bioimage analysis")
+        self.assertEqual(theme.description, "bioimage analysis")
 
     def test_add_member_to_themes(self):
         import jicagile
         themes = jicagile.config.Themes()
-        themes.add_member(lookup="img", name="bioimage analysis")
+        themes.add_member(lookup="img", description="bioimage analysis")
         self.assertEqual(len(themes), 1)
         self.assertTrue(isinstance(themes.member("img"), jicagile.config.Themes.Member))

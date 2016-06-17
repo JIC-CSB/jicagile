@@ -143,6 +143,22 @@ class ProjectFunctionalTests(unittest.TestCase):
         self.assertEqual(len(project.team), 2)
         self.assertEqual(project.team.lookups, set(["TO", "MH"]))
 
+    def test_themes(self):
+        import jicagile
+
+        fpath = os.path.join(TMP_DIR, "themes.yml")
+        with open(fpath, "w") as fh:
+            fh.write("""---
+- lookup: admin
+  description: general admin tasks
+- lookup: sysadmin
+  description: systems administraiton
+""")
+
+        project = jicagile.Project(TMP_DIR, themes_fpath=fpath)
+        self.assertEqual(len(project.themes), 2)
+        self.assertEqual(project.themes.lookups, set(["admin", "sysadmin"]))
+
 
 class TaskFunctionalTests(unittest.TestCase):
 

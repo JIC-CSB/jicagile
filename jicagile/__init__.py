@@ -7,7 +7,7 @@ from operator import itemgetter
 import yaml
 from slugify import slugify
 
-from config import Team
+from config import Team, Themes
 
 __version__ = "0.0.4"
 
@@ -72,10 +72,13 @@ class TaskCollection(list):
 class Project(object):
     """Agile project management class."""
 
-    def __init__(self, directory, team_fpath=".team.yml"):
+    def __init__(self, directory, team_fpath=".team.yml", themes_fpath=".theme.yml"):
         self.team = Team()
         if os.path.isfile(team_fpath):
             self.team = Team.from_file(team_fpath)
+        self.themes = Themes()
+        if os.path.isfile(themes_fpath):
+            self.themes = Themes.from_file(themes_fpath)
 
         self.directory = directory
         if not os.path.isdir(self.backlog_directory):

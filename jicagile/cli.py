@@ -12,8 +12,7 @@ class CLI(object):
     def __init__(self, project_directory="."):
         self.project = jicagile.Project(project_directory)
 
-    @staticmethod
-    def parse_args(args):
+    def parse_args(self, args):
         """Return parsed arguments."""
         parser = argparse.ArgumentParser()
         subparsers = parser.add_subparsers(dest="command")
@@ -25,14 +24,18 @@ class CLI(object):
                                 help="Number of story points")
         add_parser.add_argument("-c", "--current", action="store_true",
                                 help="Add to current sprint")
-        add_parser.add_argument("-p", "--primary-contact", help="Primary contact")
+        add_parser.add_argument("-p", "--primary-contact",
+                                choices=self.project.team.lookups,
+                                help="Primary contact")
 
         # The "edit" command.
         edit_parser = subparsers.add_parser("edit", help="Edit a task")
         edit_parser.add_argument("fpath", help="Path to task file")
         edit_parser.add_argument("-t", "--title", help="Task description")
         edit_parser.add_argument("-s", "--storypoints", type=int, help="Number of storypoints")
-        edit_parser.add_argument("-p", "--primary-contact", help="Primary contact")
+        edit_parser.add_argument("-p", "--primary-contact",
+                                choices=self.project.team.lookups,
+                                 help="Primary contact")
 
         # The "list" command.
         list_parser = subparsers.add_parser("list", help="List the tasks")

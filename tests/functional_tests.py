@@ -228,8 +228,8 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_add(self):
         import jicagile
         from jicagile.cli import CLI
-        args = CLI.parse_args(["add", "Basic task", "1"])
         cli = CLI(project_directory=TMP_DIR)
+        args = cli.parse_args(["add", "Basic task", "1"])
         cli.run_command("add", args)
 
         backlog_dir = os.path.join(TMP_DIR, "backlog")
@@ -243,8 +243,8 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_add_to_current(self):
         import jicagile
         from jicagile.cli import CLI
-        args = CLI.parse_args(["add", "-c", "Basic task", "1"])
         cli = CLI(project_directory=TMP_DIR)
+        args = cli.parse_args(["add", "-c", "Basic task", "1"])
         cli.run_command("add", args)
 
         current_todo_dir = os.path.join(TMP_DIR, "current", "todo")
@@ -258,14 +258,19 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_edit(self):
         import jicagile
         from jicagile.cli import CLI
-        args = CLI.parse_args(["add", "Basic task", "1"])
         cli = CLI(project_directory=TMP_DIR)
+        args = cli.parse_args(["add", "Basic task", "1"])
         cli.run_command("add", args)
 
         backlog_dir = os.path.join(TMP_DIR, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
 
-        args = CLI.parse_args(["edit",
+        team = jicagile.Team()
+        team.add_member("TO", "Tjelvar", "Olsson")
+        team.add_member("MH", "Matthew", "Hartley")
+        cli.project.team = team
+
+        args = cli.parse_args(["edit",
                               task_fpath,
                               "-t", "Complicated task",
                               "-s", "8",
@@ -280,12 +285,12 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_list(self):
         import jicagile
         from jicagile.cli import CLI
-        args = CLI.parse_args(["add", "Basic task", "1"])
         cli = CLI(project_directory=TMP_DIR)
+        args = cli.parse_args(["add", "Basic task", "1"])
         cli.run_command("add", args)
 
         backlog_dir = os.path.join(TMP_DIR, "backlog")
-        args = CLI.parse_args(["list", backlog_dir])
+        args = cli.parse_args(["list", backlog_dir])
         with capture_sys_output() as (stdout, stderr):
             cli.run_command("list", args)
             text = stdout.getvalue()
@@ -297,32 +302,17 @@ class CLIFunctionalTests(unittest.TestCase):
 """
             self.assertEqual(text, expected)
 
-
-        args = CLI.parse_args(["add", "Have fun", "1", "-p", "TO", "-c"])
-        cli.run_command("add", args)
-        args = CLI.parse_args(["add", "Management stuff", "8", "-p", "MH", "-c"])
-        cli.run_command("add", args)
-
-        args = CLI.parse_args(["list", "todo"])
-        with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
-            text = stdout.getvalue()
-            expected = """# TODO [9]
-
-## MH's tasks [8]
-
-- Management stuff [8]
-
-## TO's tasks [1]
-
-- Have fun [1]
-"""
-            self.assertEqual(text, expected, "\n" + text + expected)
-
         team = jicagile.Team()
+        team.add_member("TO", "Tjelvar", "Olsson")
         team.add_member("MH", "Matthew", "Hartley")
-        cli.team = team
-        args = CLI.parse_args(["list", "todo"])
+        cli.project.team = team
+
+        args = cli.parse_args(["add", "Have fun", "1", "-p", "TO", "-c"])
+        cli.run_command("add", args)
+        args = cli.parse_args(["add", "Management stuff", "8", "-p", "MH", "-c"])
+        cli.run_command("add", args)
+
+        args = cli.parse_args(["list", "todo"])
         with capture_sys_output() as (stdout, stderr):
             cli.run_command("list", args)
             text = stdout.getvalue()
@@ -332,24 +322,40 @@ class CLIFunctionalTests(unittest.TestCase):
 
 - Management stuff [8]
 
-## TO's tasks [1]
-
-- Have fun [1]
-"""
-
-        args = CLI.parse_args(["list", "todo", "-p", "TO"])
-        with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
-            text = stdout.getvalue()
-            expected = """# TODO [9]
-
-## TO's tasks [1]
+## Tjelvar's tasks [1]
 
 - Have fun [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
-        args = CLI.parse_args(["list", "done"])
+        args = cli.parse_args(["list", "todo"])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# TODO [9]
+
+## Matthew's tasks [8]
+
+- Management stuff [8]
+
+## Tjelvar's tasks [1]
+
+- Have fun [1]
+"""
+
+        args = cli.parse_args(["list", "todo", "-p", "TO"])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# TODO [9]
+
+## Tjelvar's tasks [1]
+
+- Have fun [1]
+"""
+            self.assertEqual(text, expected, "\n" + text + expected)
+
+        args = cli.parse_args(["list", "done"])
         with capture_sys_output() as (stdout, stderr):
             cli.run_command("list", args)
             text = stdout.getvalue()

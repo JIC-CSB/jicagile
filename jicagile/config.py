@@ -51,3 +51,13 @@ class Team(_Config):
             self.lookup = lookup
             self.first_name = first_name
             self.last_name = last_name
+
+
+class Themes(_Config):
+    """Class representing an collection of themes."""
+
+    class Member(object):
+        """Class representing a theme."""
+        def __init__(self, lookup, name):
+            self.lookup = lookup
+            self.name = name

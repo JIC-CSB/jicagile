@@ -22,7 +22,7 @@ DATA_DIR = os.path.join(HERE, 'data')
 TMP_DIR = os.path.join(HERE, 'tmp')
 
 
-class FunctionalTests(unittest.TestCase):
+class BasicWorkflowFunctionalTests(unittest.TestCase):
 
     def setUp(self):
         if not os.path.isdir(TMP_DIR):
@@ -79,6 +79,16 @@ class FunctionalTests(unittest.TestCase):
         fpath = os.path.join(TMP_DIR, "current", "todo", "say-hello-now.yml")
         self.assertTrue(os.path.isfile(fpath))
 
+
+class ProjectFunctionalTests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
+
     def test_project_initialisation(self):
         import jicagile
 
@@ -114,6 +124,16 @@ class FunctionalTests(unittest.TestCase):
         p2 = jicagile.Project(TMP_DIR)
         self.assertEqual(p1, p2)
 
+
+class TaskFunctionalTests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
+
     def test_from_file(self):
         import jicagile
         fpath = os.path.join(TMP_DIR, "test.yml")
@@ -122,6 +142,16 @@ class FunctionalTests(unittest.TestCase):
         task = jicagile.Task.from_file(fpath)
         self.assertEqual(task["title"], "Test")
         self.assertEqual(task["storypoints"], 3)
+
+
+class TeamFunctionalTests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
 
     def test_team_from_file(self):
         import jicagile
@@ -138,6 +168,12 @@ class FunctionalTests(unittest.TestCase):
         team = jicagile.Team.from_file(fpath)
         self.assertEqual(len(team), 2)
         self.assertEqual(team.lookups, set(["TO", "MH"]))
+
+    def test_team_from_nonexiting_file(self):
+        import jicagile
+        fpath = os.path.join(TMP_DIR, "team.yml")
+        team = jicagile.Team.from_file(fpath)
+        self.assertEqual(len(team), 0)
 
 
 class TaskCollectionFunctionalTests(unittest.TestCase):
@@ -162,8 +198,7 @@ class TaskCollectionFunctionalTests(unittest.TestCase):
                          expected)
 
 
-
-class CLITests(unittest.TestCase):
+class CLIFunctionalTests(unittest.TestCase):
 
     def setUp(self):
         if not os.path.isdir(TMP_DIR):
@@ -284,9 +319,6 @@ class CLITests(unittest.TestCase):
             text = stdout.getvalue()
             expected = """# DONE [0]\n"""
             self.assertEqual(text, expected, "\n" + text + expected)
-
-
-
 
 
 if __name__ == "__main__":

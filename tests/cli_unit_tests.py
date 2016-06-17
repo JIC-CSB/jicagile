@@ -21,12 +21,14 @@ def capture_sys_output():
 
 class RunCommandTest(unittest.TestCase):
 
-    def test_run_command(self):
+    def test_run(self):
         from jicagile.cli import CLI
         cli = CLI()
+        args = MagicMock()
+        args.command = "dummy"
         cli.dummy = MagicMock()
-        cli.run_command("dummy", "the args")
-        cli.dummy.assert_called_once_with("the args")
+        cli.run(args)
+        cli.dummy.assert_called_once_with(args)
 
 
 class AddCommandUnitTests(unittest.TestCase):

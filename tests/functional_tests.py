@@ -6,6 +6,7 @@ import sys
 from contextlib import contextmanager
 from StringIO import StringIO
 
+
 @contextmanager
 def capture_sys_output():
     capture_out, capture_err = StringIO(), StringIO()
@@ -224,7 +225,7 @@ class CLIFunctionalTests(unittest.TestCase):
         from jicagile.cli import CLI
         cli = CLI(project_directory=TMP_DIR)
         args = cli.parse_args(["add", "Basic task", "1"])
-        cli.run_command("add", args)
+        cli.run(args)
 
         backlog_dir = os.path.join(TMP_DIR, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
@@ -239,7 +240,7 @@ class CLIFunctionalTests(unittest.TestCase):
         from jicagile.cli import CLI
         cli = CLI(project_directory=TMP_DIR)
         args = cli.parse_args(["add", "-c", "Basic task", "1"])
-        cli.run_command("add", args)
+        cli.run(args)
 
         current_todo_dir = os.path.join(TMP_DIR, "current", "todo")
         task_fpath = os.path.join(current_todo_dir, "basic-task.yml")
@@ -254,7 +255,7 @@ class CLIFunctionalTests(unittest.TestCase):
         from jicagile.cli import CLI
         cli = CLI(project_directory=TMP_DIR)
         args = cli.parse_args(["add", "Basic task", "1"])
-        cli.run_command("add", args)
+        cli.run(args)
 
         backlog_dir = os.path.join(TMP_DIR, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
@@ -269,7 +270,7 @@ class CLIFunctionalTests(unittest.TestCase):
                               "-t", "Complicated task",
                               "-s", "8",
                               "-p", "TO"])
-        cli.run_command("edit", args)
+        cli.run(args)
 
         task_from_file = jicagile.Task.from_file(task_fpath)
         self.assertEqual(task_from_file["title"], "Complicated task")
@@ -281,12 +282,12 @@ class CLIFunctionalTests(unittest.TestCase):
         from jicagile.cli import CLI
         cli = CLI(project_directory=TMP_DIR)
         args = cli.parse_args(["add", "Basic task", "1"])
-        cli.run_command("add", args)
+        cli.run(args)
 
         backlog_dir = os.path.join(TMP_DIR, "backlog")
         args = cli.parse_args(["list", backlog_dir])
         with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
+            cli.run(args)
             text = stdout.getvalue()
             expected = """# BACKLOG [1]
 
@@ -302,13 +303,13 @@ class CLIFunctionalTests(unittest.TestCase):
         cli.project.team = team
 
         args = cli.parse_args(["add", "Have fun", "1", "-p", "TO", "-c"])
-        cli.run_command("add", args)
+        cli.run(args)
         args = cli.parse_args(["add", "Management stuff", "8", "-p", "MH", "-c"])
-        cli.run_command("add", args)
+        cli.run(args)
 
         args = cli.parse_args(["list", "todo"])
         with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
+            cli.run(args)
             text = stdout.getvalue()
             expected = """# TODO [9]
 
@@ -324,7 +325,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
         args = cli.parse_args(["list", "todo"])
         with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
+            cli.run(args)
             text = stdout.getvalue()
             expected = """# TODO [9]
 
@@ -339,7 +340,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
         args = cli.parse_args(["list", "todo", "-p", "TO"])
         with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
+            cli.run(args)
             text = stdout.getvalue()
             expected = """# TODO [9]
 
@@ -351,7 +352,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
         args = cli.parse_args(["list", "done"])
         with capture_sys_output() as (stdout, stderr):
-            cli.run_command("list", args)
+            cli.run(args)
             text = stdout.getvalue()
             expected = """# DONE [0]\n"""
             self.assertEqual(text, expected, "\n" + text + expected)

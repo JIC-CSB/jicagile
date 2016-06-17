@@ -44,9 +44,9 @@ class CLI(object):
 
         return parser.parse_args(args)
 
-    def run_command(self, command, args):
+    def run(self, args):
         """Run the specified command."""
-        func = getattr(self, command)
+        func = getattr(self, args.command)
         func(args)
 
     def add(self, args):

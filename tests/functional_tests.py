@@ -187,12 +187,6 @@ class TeamFunctionalTests(unittest.TestCase):
         self.assertEqual(len(team), 2)
         self.assertEqual(team.lookups, set(["TO", "MH"]))
 
-    def test_team_from_nonexiting_file(self):
-        import jicagile
-        fpath = os.path.join(TMP_DIR, "team.yml")
-        team = jicagile.Team.from_file(fpath)
-        self.assertEqual(len(team), 0)
-
 
 class TaskCollectionFunctionalTests(unittest.TestCase):
 

@@ -77,22 +77,22 @@ class Team(dict):
             self.first_name = first_name
             self.last_name = last_name
 
-    @staticmethod
-    def from_yaml(yaml_str):
+    @classmethod
+    def from_yaml(cls, yaml_str):
         """Return a team created from a yaml string."""
         data = yaml.load(yaml_str)
-        team = Team()
+        team = cls()
         for item in data:
             team.add_member(**item)
         return team
 
-    @staticmethod
-    def from_file(fpath):
+    @classmethod
+    def from_file(cls, fpath):
         """Return a team read in from file."""
         if os.path.isfile(fpath):
-            return Team.from_yaml(file(fpath))
+            return cls.from_yaml(file(fpath))
         else:
-            return Team()
+            return cls()
 
     @property
     def lookups(self):

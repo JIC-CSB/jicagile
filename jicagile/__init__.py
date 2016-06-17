@@ -89,7 +89,10 @@ class Team(dict):
     @staticmethod
     def from_file(fpath):
         """Return a team read in from file."""
-        return Team.from_yaml(file(fpath))
+        if os.path.isfile(fpath):
+            return Team.from_yaml(file(fpath))
+        else:
+            return Team()
 
     @property
     def lookups(self):

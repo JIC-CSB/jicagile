@@ -68,12 +68,7 @@ class CLI(object):
         if args.directory == "done":
             directory = self.project.current_done_directory
 
-        fpaths = [os.path.join(directory, fn)
-                  for fn in os.listdir(directory)
-                  if fn.endswith(".yml") or fn.endswith(".yaml")]
-        tasks = jicagile.TaskCollection()
-        for fp in fpaths:
-            tasks.append(jicagile.Task.from_file(fp))
+        tasks = jicagile.TaskCollection.from_directory(directory)
 
         sys.stdout.write("# {} [{}]\n".format(os.path.basename(directory).upper(),
                                               tasks.storypoints))

@@ -1,5 +1,7 @@
 """Command line interface."""
 
+import sys
+import os
 import argparse
 import jicagile
 
@@ -32,6 +34,11 @@ class CLI(object):
         edit_parser.add_argument("-s", "--storypoints", type=int, help="Number of storypoints")
         edit_parser.add_argument("-p", "--primary-contact", help="Primary contact")
 
+        # The "list" command.
+        list_parser = subparsers.add_parser("list", help="List the tasks")
+        list_parser.add_argument("directory", help="Path to directory with tasks")
+        list_parser.add_argument("-p", "--primary-contact", help="Primary contact")
+
         return parser.parse_args(args)
 
     def run_command(self, command, args):
@@ -52,3 +59,32 @@ class CLI(object):
                                args.title,
                                args.storypoints,
                                args.primary_contact)
+
+    def list(self, args):
+        """List tasks."""
+        directory = args.directory
+        if args.directory == "todo":
+            directory = self.project.current_todo_directory
+        if args.directory == "done":
+            directory = self.project.current_done_directory
+
+        fpaths = [os.path.join(directory, fn)
+                  for fn in os.listdir(directory)
+                  if fn.endswith(".yml") or fn.endswith(".yaml")]
+        tasks = jicagile.TaskCollection()
+        for fp in fpaths:
+            tasks.append(jicagile.Task.from_file(fp))
+
+        sys.stdout.write("# {} [{}]\n".format(os.path.basename(directory).upper(),
+                                              tasks.storypoints))
+
+        primary_contacts = tasks.primary_contacts
+        if args.primary_contact:
+            primary_contacts = [args.primary_contact,]
+        for pcontact in primary_contacts:
+            pcontact_tasks = tasks.tasks_for(pcontact)
+            name = pcontact
+            sys.stdout.write("\n## {}'s tasks [{}]\n\n".format(name,
+                                                               pcontact_tasks.storypoints))
+            for t in pcontact_tasks:
+                sys.stdout.write("- {title} [{storypoints}]\n".format(**t))

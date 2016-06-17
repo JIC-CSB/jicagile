@@ -2,6 +2,20 @@ import unittest
 import os
 import os.path
 import shutil
+import sys
+from contextlib import contextmanager
+from StringIO import StringIO
+
+@contextmanager
+def capture_sys_output():
+    capture_out, capture_err = StringIO(), StringIO()
+    current_out, current_err = sys.stdout, sys.stderr
+    try:
+        sys.stdout, sys.stderr = capture_out, capture_err
+        yield capture_out, capture_err
+    finally:
+        sys.stdout, sys.stderr = current_out, current_err
+
 
 HERE = os.path.dirname(__file__)
 DATA_DIR = os.path.join(HERE, 'data')
@@ -186,6 +200,70 @@ class CLITests(unittest.TestCase):
         self.assertEqual(task_from_file["title"], "Complicated task")
         self.assertEqual(task_from_file["storypoints"], 8)
         self.assertEqual(task_from_file["primary_contact"], "TO")
+
+    def test_list(self):
+        import jicagile
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["add", "Basic task", "1"])
+        cli = CLI(project_directory=TMP_DIR)
+        cli.run_command("add", args)
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        args = CLI.parse_args(["list", backlog_dir])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# BACKLOG [1]
+
+## None's tasks [1]
+
+- Basic task [1]
+"""
+            self.assertEqual(text, expected)
+
+
+        args = CLI.parse_args(["add", "Have fun", "1", "-p", "TO", "-c"])
+        cli.run_command("add", args)
+        args = CLI.parse_args(["add", "Management stuff", "8", "-p", "MH", "-c"])
+        cli.run_command("add", args)
+
+        args = CLI.parse_args(["list", "todo"])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# TODO [9]
+
+## MH's tasks [8]
+
+- Management stuff [8]
+
+## TO's tasks [1]
+
+- Have fun [1]
+"""
+            self.assertEqual(text, expected, "\n" + text + expected)
+
+        args = CLI.parse_args(["list", "todo", "-p", "TO"])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# TODO [9]
+
+## TO's tasks [1]
+
+- Have fun [1]
+"""
+            self.assertEqual(text, expected, "\n" + text + expected)
+
+        args = CLI.parse_args(["list", "done"])
+        with capture_sys_output() as (stdout, stderr):
+            cli.run_command("list", args)
+            text = stdout.getvalue()
+            expected = """# DONE [0]\n"""
+            self.assertEqual(text, expected, "\n" + text + expected)
+
+
+
 
 
 if __name__ == "__main__":

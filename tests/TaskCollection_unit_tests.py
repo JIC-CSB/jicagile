@@ -20,7 +20,7 @@ class TaskCollectionUnitTests(unittest.TestCase):
         task_collection.append(task3)
 
         self.assertEqual(len(task_collection), 3)
-        self.assertEqual(task_collection.primary_contacts, set(["TO", "MH"]))
+        self.assertEqual(task_collection.primary_contacts, sorted(set(["TO", "MH"])))
 
     def test_tasks_for_primary_contact(self):
         import jicagile

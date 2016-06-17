@@ -40,7 +40,7 @@ class TaskCollection(list):
     @property
     def primary_contacts(self):
         """Return set of primary contacts."""
-        return set([item["primary_contact"] for item in self])
+        return sorted(set([item["primary_contact"] for item in self]))
 
     @property
     def storypoints(self):

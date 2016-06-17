@@ -77,5 +77,18 @@ class EditCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.primary_contact, "TO")
 
 
+class ListCommandUnitTests(unittest.TestCase):
+
+    def test_basic_usage(self):
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["list", "dirpath"])
+        self.assertEqual(args.command, "list")
+        self.assertEqual(args.directory, "dirpath")
+
+    def test_primary_contact(self):
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["list", "dirpath", "-p", "TO"])
+        self.assertEqual(args.primary_contact, "TO")
+
 if __name__ == "__main__":
     unittest.main()

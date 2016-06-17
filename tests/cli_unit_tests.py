@@ -60,7 +60,7 @@ class AddCommandUnitTests(unittest.TestCase):
         from jicagile.cli import CLI
         cli = CLI()
 
-        team = jicagile.Team()
+        team = jicagile.config.Team()
         team.add_member("TO", "Tjelvar", "Olsson")
         cli.project.team = team
 
@@ -81,7 +81,7 @@ class EditCommandUnitTests(unittest.TestCase):
         from jicagile.cli import CLI
         cli = CLI()
 
-        team = jicagile.Team()
+        team = jicagile.config.Team()
         team.add_member("TO", "Tjelvar", "Olsson")
         cli.project.team = team
 

@@ -184,7 +184,7 @@ class TeamFunctionalTests(unittest.TestCase):
   first_name: Matthew
   last_name: Hartley
 """)
-        team = jicagile.Team.from_file(fpath)
+        team = jicagile.config.Team.from_file(fpath)
         self.assertEqual(len(team), 2)
         self.assertEqual(team.lookups, set(["TO", "MH"]))
 
@@ -260,7 +260,7 @@ class CLIFunctionalTests(unittest.TestCase):
         backlog_dir = os.path.join(TMP_DIR, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
 
-        team = jicagile.Team()
+        team = jicagile.config.Team()
         team.add_member("TO", "Tjelvar", "Olsson")
         team.add_member("MH", "Matthew", "Hartley")
         cli.project.team = team
@@ -297,7 +297,7 @@ class CLIFunctionalTests(unittest.TestCase):
 """
             self.assertEqual(text, expected)
 
-        team = jicagile.Team()
+        team = jicagile.config.Team()
         team.add_member("TO", "Tjelvar", "Olsson")
         team.add_member("MH", "Matthew", "Hartley")
         cli.project.team = team

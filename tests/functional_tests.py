@@ -125,5 +125,45 @@ class FunctionalTests(unittest.TestCase):
         self.assertEqual(len(team), 2)
         self.assertEqual(team.lookups, set(["TO", "MH"]))
 
+
+class CLITests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
+
+    def test_add(self):
+        import jicagile
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["add", "Basic task", "1"])
+        cli = CLI(project_directory=TMP_DIR)
+        cli.run_command("add", args)
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        task_fpath = os.path.join(backlog_dir, "basic-task.yml")
+        self.assertTrue(os.path.isfile(task_fpath))
+
+        task_from_file = jicagile.Task.from_file(task_fpath)
+        self.assertEqual(task_from_file["title"], "Basic task")
+        self.assertEqual(task_from_file["storypoints"], 1)
+
+    def test_add_to_current(self):
+        import jicagile
+        from jicagile.cli import CLI
+        args = CLI.parse_args(["add", "-c", "Basic task", "1"])
+        cli = CLI(project_directory=TMP_DIR)
+        cli.run_command("add", args)
+
+        current_todo_dir = os.path.join(TMP_DIR, "current", "todo")
+        task_fpath = os.path.join(current_todo_dir, "basic-task.yml")
+        self.assertTrue(os.path.isfile(task_fpath))
+
+        task_from_file = jicagile.Task.from_file(task_fpath)
+        self.assertEqual(task_from_file["title"], "Basic task")
+        self.assertEqual(task_from_file["storypoints"], 1)
+
 if __name__ == "__main__":
     unittest.main()

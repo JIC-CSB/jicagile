@@ -15,10 +15,11 @@ __version__ = "0.0.4"
 class Task(dict):
     """Task."""
 
-    def __init__(self, title, storypoints, primary_contact=None):
+    def __init__(self, title, storypoints, primary_contact=None, theme=None):
         self["title"] = title
         self["storypoints"] = storypoints
         self["primary_contact"] = primary_contact
+        self["theme"] = theme
 
     @staticmethod
     def from_file(fpath):
@@ -113,10 +114,14 @@ class Project(object):
         """Return the path to the current 'done' directory."""
         return os.path.join(self.current_sprint_directory, "done")
 
-    def add_task(self, title, storypoints,
-                 primary_contact=None, current=False):
+    def add_task(self,
+                 title,
+                 storypoints,
+                 primary_contact=None,
+                 theme=None,
+                 current=False):
         """Add a task to the backlog."""
-        task = Task(title, storypoints, primary_contact=primary_contact)
+        task = Task(title, storypoints, primary_contact=primary_contact, theme=theme)
         directory = self.backlog_directory
         if current:
             directory = self.current_todo_directory
@@ -124,8 +129,12 @@ class Project(object):
             yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
         return task
 
-    def edit_task(self, fpath, title=None,
-                  storypoints=None, primary_contact=None):
+    def edit_task(self,
+                  fpath,
+                  title=None,
+                  storypoints=None,
+                  primary_contact=None,
+                  theme=None):
         """Edit an exiting task."""
         task = Task.from_file(fpath)
         if title is not None:
@@ -134,6 +143,8 @@ class Project(object):
             task["storypoints"] = storypoints
         if primary_contact is not None:
             task["primary_contact"] = primary_contact
+        if theme is not None:
+            task["theme"] = theme
         with open(fpath, "w") as fh:
             yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
         return task

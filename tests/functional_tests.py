@@ -266,6 +266,25 @@ class CLIFunctionalTests(unittest.TestCase):
         self.assertEqual(task_from_file["title"], "Basic task")
         self.assertEqual(task_from_file["storypoints"], 1)
 
+    def test_add_with_theme(self):
+        import jicagile
+        from jicagile.cli import CLI
+        cli = CLI(project_directory=TMP_DIR)
+
+        themes = jicagile.config.Themes()
+        themes.add_member("admin", "grants, appraisals, etc")
+        cli.project.themes = themes
+
+        args = cli.parse_args(["add", "Basic task", "1", "-e", "admin"])
+        cli.run(args)
+
+        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        task_fpath = os.path.join(backlog_dir, "basic-task.yml")
+        self.assertTrue(os.path.isfile(task_fpath))
+
+        task_from_file = jicagile.Task.from_file(task_fpath)
+        self.assertEqual(task_from_file["theme"], "admin")
+
     def test_edit(self):
         import jicagile
         from jicagile.cli import CLI
@@ -281,17 +300,23 @@ class CLIFunctionalTests(unittest.TestCase):
         team.add_member("MH", "Matthew", "Hartley")
         cli.project.team = team
 
+        themes = jicagile.config.Themes()
+        themes.add_member("admin", "grants, appraisals, etc")
+        cli.project.themes = themes
+
         args = cli.parse_args(["edit",
                               task_fpath,
                               "-t", "Complicated task",
                               "-s", "8",
-                              "-p", "TO"])
+                              "-p", "TO",
+                              "-e", "admin"])
         cli.run(args)
 
         task_from_file = jicagile.Task.from_file(task_fpath)
         self.assertEqual(task_from_file["title"], "Complicated task")
         self.assertEqual(task_from_file["storypoints"], 8)
         self.assertEqual(task_from_file["primary_contact"], "TO")
+        self.assertEqual(task_from_file["theme"], "admin")
 
     def test_list(self):
         import jicagile

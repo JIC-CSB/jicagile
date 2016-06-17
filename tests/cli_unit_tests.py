@@ -73,6 +73,18 @@ class AddCommandUnitTests(unittest.TestCase):
         args = cli.parse_args(["add", "-c", "Simple task", "1"])
         self.assertTrue(args.current)
 
+    def test_themes(self):
+        import jicagile.config
+        from jicagile.cli import CLI
+        cli = CLI()
+
+        themes = jicagile.config.Themes()
+        themes.add_member("sysadmin", "managing linux desktops and servers")
+        cli.project.themes = themes
+
+        args = cli.parse_args(["add", "Simple task", "1", "-e", "sysadmin"])
+        self.assertEqual(args.theme, "sysadmin")
+
 
 class EditCommandUnitTests(unittest.TestCase):
 

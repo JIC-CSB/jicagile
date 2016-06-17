@@ -27,6 +27,9 @@ class CLI(object):
         add_parser.add_argument("-p", "--primary-contact",
                                 choices=self.project.team.lookups,
                                 help="Primary contact")
+        add_parser.add_argument("-e", "--theme",
+                                choices=self.project.themes.lookups,
+                                help="Theme of task")
 
         # The "edit" command.
         edit_parser = subparsers.add_parser("edit", help="Edit a task")
@@ -36,6 +39,9 @@ class CLI(object):
         edit_parser.add_argument("-p", "--primary-contact",
                                 choices=self.project.team.lookups,
                                  help="Primary contact")
+        edit_parser.add_argument("-e", "--theme",
+                                 choices=self.project.themes.lookups,
+                                 help="Theme of task")
 
         # The "list" command.
         list_parser = subparsers.add_parser("list", help="List the tasks")
@@ -54,6 +60,7 @@ class CLI(object):
         self.project.add_task(args.title,
                               args.storypoints,
                               args.primary_contact,
+                              args.theme,
                               args.current)
 
     def edit(self, args):
@@ -61,7 +68,8 @@ class CLI(object):
         self.project.edit_task(args.fpath,
                                args.title,
                                args.storypoints,
-                               args.primary_contact)
+                               args.primary_contact,
+                               args.theme)
 
     def list(self, args):
         """List tasks."""

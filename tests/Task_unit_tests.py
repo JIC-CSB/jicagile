@@ -17,6 +17,11 @@ class TaskUnitTests(unittest.TestCase):
         task = jicagile.Task(" Do something great! ", 3, primary_contact="TO")
         self.assertEqual(task["primary_contact"], "TO")
 
+    def test_task_can_be_initialised_with_a_theme(self):
+        import jicagile
+        task = jicagile.Task("Do something great!", 3, theme="misc")
+        self.assertEqual(task["theme"], "misc")
+
 
 if __name__ == "__main__":
     unittest.main()

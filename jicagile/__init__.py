@@ -60,11 +60,11 @@ class TaskCollection(list):
         """Return the number of story points in the task collection."""
         return sum([item["storypoints"] for item in self])
 
-    def tasks_for(self, primary_contact, sort_by="storypoints", reverse=False):
+    def tasks_for(self, primary_contact):
         """Return list of tasks for a primary contact."""
-        key = itemgetter(sort_by)
+        key = itemgetter("storypoints")
         task_collection = TaskCollection()
-        for task in sorted(self, key=key, reverse=reverse):
+        for task in sorted(self, key=key):
             if task["primary_contact"] == primary_contact:
                 task_collection.append(task)
         return task_collection

@@ -34,21 +34,10 @@ class TaskCollectionUnitTests(unittest.TestCase):
         task_collection.append(task2)
         task_collection.append(task3)
 
-        to_tasks = task_collection.tasks_for(primary_contact="TO",
-                                             sort_by="title")
-        self.assertEqual(len(to_tasks), 2)
-        self.assertEqual(to_tasks[0]["title"], "Do 3")
-
-        to_tasks = task_collection.tasks_for(primary_contact="TO",
-                                             sort_by="title",
-                                             reverse=True)
+        to_tasks = task_collection.tasks_for(primary_contact="TO")
         self.assertEqual(len(to_tasks), 2)
         self.assertEqual(to_tasks[0]["title"], "What 1")
-
-        to_tasks = task_collection.tasks_for(primary_contact="TO",
-                                             sort_by="storypoints")
-        self.assertEqual(len(to_tasks), 2)
-        self.assertEqual(to_tasks[0]["title"], "What 1")
+        self.assertEqual(to_tasks[1]["title"], "Do 3")
 
     def test_story_points(self):
         import jicagile
@@ -64,9 +53,7 @@ class TaskCollectionUnitTests(unittest.TestCase):
 
         self.assertEqual(task_collection.storypoints, 9)
 
-        to_tasks = task_collection.tasks_for(primary_contact="TO",
-                                             sort_by="title",
-                                             reverse=True)
+        to_tasks = task_collection.tasks_for(primary_contact="TO")
         self.assertEqual(to_tasks.storypoints, 6)
 
 

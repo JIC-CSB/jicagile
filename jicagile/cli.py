@@ -83,14 +83,13 @@ class CLI(object):
             directory = directory[:-1]
 
         tasks = jicagile.TaskCollection.from_directory(directory)
+        if args.primary_contact:
+            tasks = tasks.tasks_for(args.primary_contact)
 
         sys.stdout.write("# {} [{}]\n".format(os.path.basename(directory).upper(),
                                               tasks.storypoints))
 
-        primary_contacts = tasks.primary_contacts
-        if args.primary_contact:
-            primary_contacts = [args.primary_contact,]
-        for pcontact in primary_contacts:
+        for pcontact in tasks.primary_contacts:
             pcontact_tasks = tasks.tasks_for(pcontact)
             name = pcontact
             if pcontact in self.project.team:

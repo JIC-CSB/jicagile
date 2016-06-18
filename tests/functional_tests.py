@@ -396,7 +396,7 @@ class CLIFunctionalTests(unittest.TestCase):
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
             text = stdout.getvalue()
-            expected = """# TODO [16]
+            expected = """# TODO [8]
 
 ## Tjelvar's tasks [8]
 

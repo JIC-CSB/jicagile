@@ -50,6 +50,13 @@ class TeamUnitTests(unittest.TestCase):
         self.assertEqual(len(team), 2)
         self.assertEqual(team.lookups, set(["TO", "MH"]))
 
+    def test_name(self):
+        import jicagile
+        team = jicagile.config.Team()
+        team.add_member(lookup="TO", first_name="Tjelvar", last_name="Olsson")
+        self.assertEqual(team.name("TO"), "Tjelvar")
+        self.assertEqual(team.name("MH"), "MH")
+
 
 if __name__ == "__main__":
     unittest.main()

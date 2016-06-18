@@ -52,6 +52,11 @@ class Team(_Config):
             self.first_name = first_name
             self.last_name = last_name
 
+    def name(self, lookup):
+        if lookup in self:
+            return self[lookup].first_name
+        return lookup
+
 
 class Themes(_Config):
     """Class representing an collection of themes."""

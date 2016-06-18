@@ -358,7 +358,7 @@ class CLIFunctionalTests(unittest.TestCase):
                                "-e", "admin",
                                "-c"])
         cli.run(args)
-        args = cli.parse_args(["add", "Fill in appriasal form", "5",
+        args = cli.parse_args(["add", "Attempt to fill in appriasal form", "5",
                                "-p", "TO",
                                "-e", "admin",
                                "-c"])
@@ -385,10 +385,10 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## Tjelvar's tasks [8]
 
-- [admin] Email people [1]
-- [fun] Have fun [1]
 - [] Other stuff [1]
-- [admin] Fill in appriasal form [5]
+- [admin] Email people [1]
+- [admin] Attempt to fill in appriasal form [5]
+- [fun] Have fun [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
@@ -400,10 +400,10 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## Tjelvar's tasks [8]
 
-- [admin] Email people [1]
-- [fun] Have fun [1]
 - [] Other stuff [1]
-- [admin] Fill in appriasal form [5]
+- [admin] Email people [1]
+- [admin] Attempt to fill in appriasal form [5]
+- [fun] Have fun [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 

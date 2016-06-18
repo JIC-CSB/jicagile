@@ -65,7 +65,7 @@ class TaskCollection(list):
 
     def tasks_for(self, primary_contact):
         """Return list of tasks for a primary contact."""
-        key = itemgetter("storypoints")
+        key = itemgetter("theme", "storypoints")
         task_collection = TaskCollection()
         for task in sorted(self, key=key):
             if task["primary_contact"] == primary_contact:

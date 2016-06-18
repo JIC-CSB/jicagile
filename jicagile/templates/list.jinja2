@@ -1,0 +1,6 @@
+# {% filter upper %}{{ directory }}{% endfilter %} [{{ tasks.storypoints }}]
+{% for pcontact in tasks.primary_contacts %}
+## {{ team.name(pcontact) }}'s tasks [{{ tasks.tasks_for(pcontact).storypoints }}]
+{% for task in tasks.tasks_for(pcontact) %}
+- [{{ task["theme"] }}] {{ task["title"] }} [{{ task["storypoints"] }}]{% endfor %}
+{% endfor %}

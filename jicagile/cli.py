@@ -3,7 +3,15 @@
 import sys
 import os
 import argparse
+
+from jinja2 import Environment, FileSystemLoader
+
 import jicagile
+
+
+HERE = os.path.dirname(os.path.realpath(__file__))
+env = Environment(loader=FileSystemLoader(os.path.join(HERE, "templates")))
+list_template = env.get_template("list.jinja2")
 
 
 class CLI(object):
@@ -35,9 +43,10 @@ class CLI(object):
         edit_parser = subparsers.add_parser("edit", help="Edit a task")
         edit_parser.add_argument("fpath", help="Path to task file")
         edit_parser.add_argument("-t", "--title", help="Task description")
-        edit_parser.add_argument("-s", "--storypoints", type=int, help="Number of storypoints")
+        edit_parser.add_argument("-s", "--storypoints",
+                                 type=int, help="Number of storypoints")
         edit_parser.add_argument("-p", "--primary-contact",
-                                choices=self.project.team.lookups,
+                                 choices=self.project.team.lookups,
                                  help="Primary contact")
         edit_parser.add_argument("-e", "--theme",
                                  choices=self.project.themes.lookups,
@@ -45,8 +54,10 @@ class CLI(object):
 
         # The "list" command.
         list_parser = subparsers.add_parser("list", help="List the tasks")
-        list_parser.add_argument("directory", help="Path to directory with tasks")
-        list_parser.add_argument("-p", "--primary-contact", help="Primary contact")
+        list_parser.add_argument("directory",
+                                 help="Path to directory with tasks")
+        list_parser.add_argument("-p", "--primary-contact",
+                                 help="Primary contact")
 
         return parser.parse_args(args)
 
@@ -86,18 +97,10 @@ class CLI(object):
         if args.primary_contact:
             tasks = tasks.tasks_for(args.primary_contact)
 
-        sys.stdout.write("# {} [{}]\n".format(os.path.basename(directory).upper(),
-                                              tasks.storypoints))
-
-        for pcontact in tasks.primary_contacts:
-            pcontact_tasks = tasks.tasks_for(pcontact)
-            name = pcontact
-            if pcontact in self.project.team:
-                name = self.project.team[pcontact].first_name
-            sys.stdout.write("\n## {}'s tasks [{}]\n\n".format(name,
-                                                               pcontact_tasks.storypoints))
-            for t in pcontact_tasks:
-                sys.stdout.write("- [{theme}] {title} [{storypoints}]\n".format(**t))
+        directory = os.path.basename(directory)
+        sys.stdout.write(list_template.render(tasks=tasks,
+                                              directory=directory,
+                                              team=self.project.team))
 
 
 def main():

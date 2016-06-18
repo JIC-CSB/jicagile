@@ -336,7 +336,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
 - [] Basic task [1]
 """
-            self.assertEqual(text, expected)
+            self.assertEqual(text, expected, "\n" + text + expected)
 
         team = jicagile.config.Team()
         team.add_member("TO", "Tjelvar", "Olsson")

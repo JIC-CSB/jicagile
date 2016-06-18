@@ -32,6 +32,6 @@ setup(name="jicagile",
         ],
       },
       cmdclass={"test": NoseTestCommand},
-      install_requires=["pyyaml", "python-slugify"],
+      install_requires=["pyyaml", "python-slugify", "jinja2"],
       tests_require=["nose", "coverage"],
 )

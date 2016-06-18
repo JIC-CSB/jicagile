@@ -4,9 +4,12 @@ import sys
 import os
 import argparse
 
+import colorama
 from jinja2 import Environment, FileSystemLoader
 
 import jicagile
+
+colorama.init()
 
 
 HERE = os.path.dirname(os.path.realpath(__file__))
@@ -98,7 +101,7 @@ class CLI(object):
             tasks = tasks.tasks_for(args.primary_contact)
 
         directory = os.path.basename(directory)
-        sys.stdout.write(list_template.render(tasks=tasks,
+        print(list_template.render(tasks=tasks,
                                               directory=directory,
                                               team=self.project.team))
 

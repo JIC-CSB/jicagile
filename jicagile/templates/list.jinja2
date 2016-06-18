@@ -1,6 +1,5 @@
-# {% filter upper %}{{ directory }}{% endfilter %} [{{ tasks.storypoints }}]
-{% for pcontact in tasks.primary_contacts %}
-## {{ team.name(pcontact) }}'s tasks [{{ tasks.tasks_for(pcontact).storypoints }}]
+{{ '\033[1m' }}# {% filter upper %}{{ directory }}{% endfilter %} [{{ tasks.storypoints }}]{{ '\x1b[00m' }}{% for pcontact in tasks.primary_contacts %}
+
+{{ '\033[1m' }}## {{ team.name(pcontact) }}'s tasks [{{ tasks.tasks_for(pcontact).storypoints }}]{{ '\x1b[00m' }}
 {% for task in tasks.tasks_for(pcontact) %}
-- [{{ task["theme"] }}] {{ task["title"] }} [{{ task["storypoints"] }}]{% endfor %}
-{% endfor %}
+- {{ '\033[93m' }}[{{ task["theme"] }}]{{ '\033[00m' }} {{ task["title"] }} [{{ task["storypoints"] }}]{% endfor %}{% endfor %}

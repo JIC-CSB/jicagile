@@ -5,7 +5,9 @@ import shutil
 import sys
 from contextlib import contextmanager
 from StringIO import StringIO
+import re
 
+ansi_escape = re.compile(r'\x1b[^m]*m')
 
 @contextmanager
 def capture_sys_output():
@@ -329,13 +331,17 @@ class CLIFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["list", backlog_dir])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
-            text = stdout.getvalue()
+            text = ansi_escape.sub('', stdout.getvalue())
             expected = """# BACKLOG [1]
 
 ## None's tasks [1]
 
 - [] Basic task [1]
 """
+            with open('text.md', 'w') as fh:
+                fh.write(text)
+            with open('expected.md', 'w') as fh:
+                fh.write(expected)
             self.assertEqual(text, expected, "\n" + text + expected)
 
         team = jicagile.config.Team()
@@ -376,7 +382,7 @@ class CLIFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["list", "todo"])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
-            text = stdout.getvalue()
+            text = ansi_escape.sub("", stdout.getvalue())
             expected = """# TODO [16]
 
 ## Matthew's tasks [8]
@@ -395,7 +401,7 @@ class CLIFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["list", "todo", "-p", "TO"])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
-            text = stdout.getvalue()
+            text = ansi_escape.sub("", stdout.getvalue())
             expected = """# TODO [8]
 
 ## Tjelvar's tasks [8]
@@ -410,7 +416,7 @@ class CLIFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["list", "done"])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
-            text = stdout.getvalue()
+            text = ansi_escape.sub("", stdout.getvalue())
             expected = """# DONE [0]\n"""
             self.assertEqual(text, expected, "\n" + text + expected)
 
@@ -425,14 +431,14 @@ class CLIFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["list", backlog_dir])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
-            text = stdout.getvalue()
+            text = ansi_escape.sub('', stdout.getvalue())
             expected = """# BACKLOG [1]
 
 ## None's tasks [1]
 
 - [] Basic task [1]
 """
-            self.assertEqual(text, expected)
+            self.assertEqual(text, expected, "\n" + text + expected)
 
 
 if __name__ == "__main__":

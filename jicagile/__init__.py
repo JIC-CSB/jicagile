@@ -19,7 +19,10 @@ class Task(dict):
         self["title"] = title
         self["storypoints"] = storypoints
         self["primary_contact"] = primary_contact
-        self["theme"] = theme
+        if theme:
+            self["theme"] = theme
+        else:
+            self["theme"] = ""
 
     @staticmethod
     def from_file(fpath):

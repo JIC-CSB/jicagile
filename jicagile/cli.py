@@ -98,7 +98,7 @@ class CLI(object):
             sys.stdout.write("\n## {}'s tasks [{}]\n\n".format(name,
                                                                pcontact_tasks.storypoints))
             for t in pcontact_tasks:
-                sys.stdout.write("- {title} [{storypoints}]\n".format(**t))
+                sys.stdout.write("- [{theme}] {title} [{storypoints}]\n".format(**t))
 
 
 def main():

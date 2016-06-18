@@ -334,7 +334,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## None's tasks [1]
 
-- Basic task [1]
+- [] Basic task [1]
 """
             self.assertEqual(text, expected)
 
@@ -343,51 +343,67 @@ class CLIFunctionalTests(unittest.TestCase):
         team.add_member("MH", "Matthew", "Hartley")
         cli.project.team = team
 
-        args = cli.parse_args(["add", "Have fun", "1", "-p", "TO", "-c"])
+        themes = jicagile.config.Themes()
+        themes.add_member("admin", "forms etc")
+        themes.add_member("fun", "programming etc")
+        cli.project.themes = themes
+
+        args = cli.parse_args(["add", "Have fun", "1",
+                               "-p", "TO",
+                               "-e", "fun",
+                               "-c"])
         cli.run(args)
-        args = cli.parse_args(["add", "Management stuff", "8", "-p", "MH", "-c"])
+        args = cli.parse_args(["add", "Email people", "1",
+                               "-p", "TO",
+                               "-e", "admin",
+                               "-c"])
+        cli.run(args)
+        args = cli.parse_args(["add", "Fill in appriasal form", "5",
+                               "-p", "TO",
+                               "-e", "admin",
+                               "-c"])
+        cli.run(args)
+        args = cli.parse_args(["add", "Other stuff", "1",
+                               "-p", "TO",
+                               "-c"])
+        cli.run(args)
+        args = cli.parse_args(["add", "Management stuff", "8",
+                               "-p", "MH",
+                               "-e", "admin",
+                               "-c"])
         cli.run(args)
 
         args = cli.parse_args(["list", "todo"])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
             text = stdout.getvalue()
-            expected = """# TODO [9]
+            expected = """# TODO [16]
 
 ## Matthew's tasks [8]
 
-- Management stuff [8]
+- [admin] Management stuff [8]
 
-## Tjelvar's tasks [1]
+## Tjelvar's tasks [8]
 
-- Have fun [1]
+- [admin] Email people [1]
+- [fun] Have fun [1]
+- [] Other stuff [1]
+- [admin] Fill in appriasal form [5]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
-
-        args = cli.parse_args(["list", "todo"])
-        with capture_sys_output() as (stdout, stderr):
-            cli.run(args)
-            text = stdout.getvalue()
-            expected = """# TODO [9]
-
-## Matthew's tasks [8]
-
-- Management stuff [8]
-
-## Tjelvar's tasks [1]
-
-- Have fun [1]
-"""
 
         args = cli.parse_args(["list", "todo", "-p", "TO"])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
             text = stdout.getvalue()
-            expected = """# TODO [9]
+            expected = """# TODO [16]
 
-## Tjelvar's tasks [1]
+## Tjelvar's tasks [8]
 
-- Have fun [1]
+- [admin] Email people [1]
+- [fun] Have fun [1]
+- [] Other stuff [1]
+- [admin] Fill in appriasal form [5]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
@@ -414,7 +430,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## None's tasks [1]
 
-- Basic task [1]
+- [] Basic task [1]
 """
             self.assertEqual(text, expected)
 

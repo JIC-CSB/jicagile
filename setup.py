@@ -27,6 +27,7 @@ readme = open('README.rst').read()
 
 setup(name="jicagile",
       packages=["jicagile"],
+      package_data={"jicagile": ["templates/*"]},
       version=version,
       description="Lighweight command line tool for agile project management",
       long_description=readme,

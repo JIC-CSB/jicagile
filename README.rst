@@ -2,8 +2,6 @@
 jicagile
 ========
 
-Lightweight command line tool for agile project management.
-
 - GitHub: https://github.com/JIC-CSB/jicagile
 - PyPI: https://pypi.python.org/pypi/jicagile
 - Free software: MIT License

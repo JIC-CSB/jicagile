@@ -1,5 +1,4 @@
 from setuptools import setup
-import jicagile
 
 # Importing the "multiprocessing" module is required for the "nose.collector".
 # See also: http://bugs.python.org/issue15881#msg170215
@@ -22,15 +21,34 @@ class NoseTestCommand(TestCommand):
         import nose
         nose.run_exit(argv=['nosetests'])
 
+version = 0.2.0
+readme = open('README.rst').read()
+
 
 setup(name="jicagile",
-      version=jicagile.__version__,
-      packages=["jicagile"],
+      packages=["jicagile", "jicagile.config", "jicagile.cli", "jicagile.history"],
+      version=version,
+      long_description=readme,
+      author='Tjelvar Olsson',
+      author_email = 'tjelvar.olsson@jic.ac.uk',
       entry_points = {
         "console_scripts": [
             "agl=jicagile.cli:main",
         ],
       },
+      url = 'https://github.com/JIC-CSB/jicagile',
+      download_url = 'https://github.com/JIC-CSB/jicagile/tarball/{}'.format(version),
+      license='MIT',
+      classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+      ],
+      keywords = ['agile', 'project', 'management'],
       cmdclass={"test": NoseTestCommand},
       install_requires=["pyyaml", "python-slugify", "jinja2", "colorama"],
       tests_require=["nose", "coverage"],

@@ -1,9 +1,147 @@
-README
-======
+jicagile
+========
+
+Lightweight command line tool for agile project management.
+
+Installation
+------------
 
 To install the jicagile package.
 
 .. code-block:: bash
 
+    pip install jicagile
+
+Or install it from source.
+
+.. code-block:: bash
+
+    git clone https://github.com/JIC-CSB/jicagile.git
     cd jicagile
     python setup.py install
+
+
+Usage
+-----
+
+The package comes with a command line utility named ``agl``.
+When you run the ``agl`` command it assumes that you are in
+a directory where you want to store your agile project management
+files.
+
+The command below creates a task with the title
+``"Learn how to use agl cmd line"`` of size 3. The available
+story point sizes are 1, 3, 5 and 8.
+
+.. code-block:: bash
+
+    agl add "Learn how to use agl cmd line" 3
+
+This will create a ``backlog`` directory and place a file named
+``learn-how-to-use-agl-cmd-line.yml`` file in it. It will also
+create the directories ``current/{{todo,done}}``.
+
+To move the task to the current sprint.
+
+.. code-block:: bash
+
+    mv backlog/learn-how-to-use-agl-cmd-line.yml current/todo
+
+To mark the task as done.
+
+.. code-block:: bash
+
+    mv current/todo/learn-how-to-use-agl-cmd-line.yml current/done
+
+To add a task to the current "todo" list one can use the ``-c`` argument
+(mnemonic current).
+
+.. code-block:: bash
+
+    agl add -c "Email friends about jicagile" 1
+
+To list the content of the backlog.
+
+.. code-block:: bash
+
+    agl list backlog/
+
+The ``todo`` and ``done`` directories have aliases so you do not need to
+specify the full path to list their content.
+
+.. code-block:: bash
+
+    agl list todo
+    agl list done
+
+You can edit tasks using your favorite text editor or you can use the
+``agl edit`` command. For example the command below increases the number
+of story points from one to five.
+
+.. code-block:: bash
+
+    agl edit current/todo/email-friends-about-jicagile.yml --storypoints=5
+
+You can add themes to your project.
+
+.. code-block:: bash
+
+    agl theme add admin "Emails, forms, meetings, etc"
+    agl edit current/todo/email-friends-about-jicagile.yml --theme=admin
+
+Themes are stored in a .themes.yml file.
+
+You can specify a team as well by manually creating a ``.team.yml`` file
+in the agile project directory.
+
+.. code-block:: yaml
+
+    ---
+    - lookup: TO
+      first_name: Tjelvar
+      last_name: Olsson
+    - lookup: MH
+      first_name: Matthew
+      last_name: Hartley
+
+You can then associate a task with a primary contact. (This may not be
+very agile in that anyone is meant to pick up any task, but I find that
+it can be useful.)
+
+.. code-block:: bash
+
+    agl add "Write report" 8 -p MH -e admin
+
+In the above ``-p`` is the short hand for ``--primary-contact`` and
+``-e`` is short hand for ``--theme``.
+
+Note that as the ``agl`` tool simply creates text files it can be
+used together with ``git``. It can be quite satisfying to have the
+agile project management file under version control on GitHub.
+
+Once you have had your sprint review meeting and all the relevant
+files have been moved to the ``current/done`` directory create a
+directory named ``past_sprints``.
+
+.. code-block:: bash
+
+    mkdir past_sprints
+
+Then move and rename the ``current/done`` directory there with
+todays date using a year-month-day scheme.
+
+.. code-bock:: bash
+
+    mv current/todo past_sprints/2016-06-19
+
+
+Release notes
+-------------
+
+0.2.0
+~~~~~
+
+- Refactored and redesigned the command line interface
+- Improved test coverage
+- Added color to list output
+- Added ability to associate a task with a theme

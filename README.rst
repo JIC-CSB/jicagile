@@ -135,7 +135,7 @@ directory named ``past_sprints``.
 Then move and rename the ``current/done`` directory there with
 todays date using a year-month-day scheme.
 
-.. code-bock:: bash
+.. code-block:: bash
 
     mv current/todo past_sprints/2016-06-19
 

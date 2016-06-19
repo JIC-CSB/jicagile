@@ -1,2 +1,3 @@
 include README.rst
 include LICENCE.md
+include jicagile/templates/*

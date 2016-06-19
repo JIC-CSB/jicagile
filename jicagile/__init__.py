@@ -76,7 +76,7 @@ class TaskCollection(list):
 class Project(object):
     """Agile project management class."""
 
-    def __init__(self, directory, team_fpath=".team.yml", themes_fpath=".theme.yml"):
+    def __init__(self, directory, team_fpath=".team.yml", themes_fpath=".themes.yml"):
         self.team = Team()
         if os.path.isfile(team_fpath):
             self.team = Team.from_file(team_fpath)

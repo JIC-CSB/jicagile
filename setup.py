@@ -21,7 +21,7 @@ class NoseTestCommand(TestCommand):
         import nose
         nose.run_exit(argv=['nosetests'])
 
-version = "0.2.0"
+version = "0.2.1"
 readme = open('README.rst').read()
 
 

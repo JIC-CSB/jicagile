@@ -440,6 +440,48 @@ class CLIFunctionalTests(unittest.TestCase):
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
+class ThemesFunctionalTests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
+
+    def test_to_file(self):
+        from jicagile.config import Themes
+        fpath = os.path.join(TMP_DIR, ".themes.yml")
+        self.assertFalse(os.path.isfile(fpath))
+
+        themes = Themes()
+        themes.add_member("admin", "stuff we need to do")
+        themes.to_file(fpath)
+        self.assertTrue(os.path.isfile(fpath))
+        from_file_themes = Themes.from_file(fpath)
+        self.assertEqual(themes, from_file_themes)
+
+
+    def test_adding_themes(self):
+        from jicagile.cli import CLI
+        from jicagile.config import Themes
+        cli = CLI(project_directory=TMP_DIR)
+
+        # No .themes.yml file exists yet.
+        themes_fpath = os.path.join(TMP_DIR, ".themes.yml")
+        self.assertFalse(os.path.isfile(themes_fpath))
+
+        args = cli.parse_args(["theme", "add", "admin", "stuff we need to do"])
+        cli.run(args)
+        self.assertTrue(os.path.isfile(themes_fpath))
+        themes = Themes.from_file(themes_fpath)
+        self.assertEqual(len(themes), 1)
+        self.assertEqual(themes["admin"].description, "stuff we need to do")
+
+        args = cli.parse_args(["theme", "add", "sysadmin", "configure servers"])
+        cli.run(args)
+        themes = Themes.from_file(themes_fpath)
+        self.assertEqual(len(themes), 2)
 
 if __name__ == "__main__":
     unittest.main()

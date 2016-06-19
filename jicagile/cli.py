@@ -8,6 +8,7 @@ import colorama
 from jinja2 import Environment, FileSystemLoader
 
 import jicagile
+import jicagile.config
 
 colorama.init()
 
@@ -62,6 +63,13 @@ class CLI(object):
         list_parser.add_argument("-p", "--primary-contact",
                                  help="Primary contact")
 
+        # The "theme" command.
+        theme_parser = subparsers.add_parser("theme", help="Add or remove themes")
+        theme_subparsers = theme_parser.add_subparsers(dest="subcommand")
+        theme_add_parser = theme_subparsers.add_parser("add", help="Add a theme")
+        theme_add_parser.add_argument("name", help="Lookup name")
+        theme_add_parser.add_argument("description", help="Theme description")
+
         return parser.parse_args(args)
 
     def run(self, args):
@@ -104,6 +112,15 @@ class CLI(object):
         print(list_template.render(tasks=tasks,
                                               directory=directory,
                                               team=self.project.team))
+
+    def theme(self, args):
+        """Add or remove a theme from the .theme.yml file."""
+        fpath = os.path.join(self.project.directory, ".themes.yml")
+        themes = jicagile.config.Themes()
+        if os.path.isfile(fpath):
+            themes = jicagile.config.Themes.from_file(fpath)
+        themes.add_member(args.name, args.description)
+        themes.to_file(fpath)
 
 
 def main():

@@ -63,6 +63,17 @@ class Themes(_Config):
 
     class Member(object):
         """Class representing a theme."""
+
+        def __eq__(self, other):
+            return (self.lookup == other.lookup) and (self.description == other.description)
         def __init__(self, lookup, description):
             self.lookup = lookup
             self.description = description
+
+    def to_file(self, fpath):
+        """Write a configuration to file."""
+        with open(fpath, "w") as fh:
+            fh.write("---\n")
+            for m in self.values():
+                fh.write("- lookup: {}\n".format(m.lookup))
+                fh.write("  description: {}\n".format(m.description))

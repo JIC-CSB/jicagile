@@ -462,7 +462,7 @@ class ThemesFunctionalTests(unittest.TestCase):
         self.assertEqual(themes, from_file_themes)
 
 
-    def test_adding_themes(self):
+    def test_theme_command(self):
         from jicagile.cli import CLI
         from jicagile.config import Themes
         cli = CLI(project_directory=TMP_DIR)
@@ -482,6 +482,17 @@ class ThemesFunctionalTests(unittest.TestCase):
         cli.run(args)
         themes = Themes.from_file(themes_fpath)
         self.assertEqual(len(themes), 2)
+
+        args = cli.parse_args(["theme", "rm", "admin"])
+        cli.run(args)
+        themes = Themes.from_file(themes_fpath)
+        self.assertEqual(len(themes), 1)
+        self.assertFalse("admin" in themes)
+        self.assertTrue("sysadmin" in themes)
+
+        args = cli.parse_args(["theme", "rm", "admin"])
+        cli.run(args)
+
 
 if __name__ == "__main__":
     unittest.main()

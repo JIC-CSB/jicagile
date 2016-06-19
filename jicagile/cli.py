@@ -69,6 +69,8 @@ class CLI(object):
         theme_add_parser = theme_subparsers.add_parser("add", help="Add a theme")
         theme_add_parser.add_argument("name", help="Lookup name")
         theme_add_parser.add_argument("description", help="Theme description")
+        theme_rm_parser = theme_subparsers.add_parser("rm", help="Remove a theme")
+        theme_rm_parser.add_argument("name", help="Lookup name")
 
         return parser.parse_args(args)
 
@@ -119,8 +121,17 @@ class CLI(object):
         themes = jicagile.config.Themes()
         if os.path.isfile(fpath):
             themes = jicagile.config.Themes.from_file(fpath)
-        themes.add_member(args.name, args.description)
-        themes.to_file(fpath)
+
+        if args.subcommand == "add":
+            themes.add_member(args.name, args.description)
+            themes.to_file(fpath)
+        elif args.subcommand == "rm":
+            if args.name not in themes:
+                print("No theme named: {}".format(args.name))
+                print("Existing themes: {}".format(", ".join(themes.lookups)))
+                return
+            del themes[args.name]
+            themes.to_file(fpath)
 
 
 def main():

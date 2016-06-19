@@ -129,7 +129,7 @@ class ListCommandUnitTests(unittest.TestCase):
 
 class ThemeCommandUnitTests(unittest.TestCase):
 
-    def test_basic_usage(self):
+    def test_add_usage(self):
         from jicagile.cli import CLI
         cli = CLI()
         args = cli.parse_args(["theme", "add", "admin", "report writing"])
@@ -137,6 +137,14 @@ class ThemeCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.subcommand, "add")
         self.assertEqual(args.name, "admin")
         self.assertEqual(args.description, "report writing")
+
+    def test_rm_usage(self):
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["theme", "rm", "admin"])
+        self.assertEqual(args.command, "theme")
+        self.assertEqual(args.subcommand, "rm")
+        self.assertEqual(args.name, "admin")
 
 if __name__ == "__main__":
     unittest.main()

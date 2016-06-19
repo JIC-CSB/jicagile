@@ -338,10 +338,6 @@ class CLIFunctionalTests(unittest.TestCase):
 
 - [] Basic task [1]
 """
-            with open('text.md', 'w') as fh:
-                fh.write(text)
-            with open('expected.md', 'w') as fh:
-                fh.write(expected)
             self.assertEqual(text, expected, "\n" + text + expected)
 
         team = jicagile.config.Team()

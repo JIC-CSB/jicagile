@@ -26,7 +26,7 @@ readme = open('README.rst').read()
 
 
 setup(name="jicagile",
-      packages=["jicagile", "jicagile.config", "jicagile.cli", "jicagile.history"],
+      packages=["jicagile"],
       version=version,
       long_description=readme,
       author='Tjelvar Olsson',

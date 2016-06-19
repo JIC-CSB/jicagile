@@ -28,6 +28,7 @@ readme = open('README.rst').read()
 setup(name="jicagile",
       packages=["jicagile"],
       version=version,
+      description="Lighweight command line tool for agile project management",
       long_description=readme,
       author='Tjelvar Olsson',
       author_email = 'tjelvar.olsson@jic.ac.uk',

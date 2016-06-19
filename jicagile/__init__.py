@@ -9,7 +9,7 @@ from slugify import slugify
 
 from config import Team, Themes
 
-__version__ = "0.0.4"
+__version__ = "0.2.0"
 
 
 class Task(dict):

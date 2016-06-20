@@ -52,6 +52,6 @@ setup(name="jicagile",
       ],
       keywords = ['agile', 'project', 'management'],
       cmdclass={"test": NoseTestCommand},
-      install_requires=["pyyaml", "python-slugify", "jinja2", "colorama"],
+      install_requires=["pyyaml", "python-slugify", "jinja2", "colorama", "termcolor"],
       tests_require=["nose", "coverage"],
 )

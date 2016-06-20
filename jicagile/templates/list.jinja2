@@ -1,12 +1,12 @@
-{{ '\033[1m' -}}
-# {% filter upper %}{{ directory }}{% endfilter %} [{{ tasks.storypoints }}]
-{{- '\x1b[00m' }}
+{% filter colored("white", attrs=["bold"]) -%}
+# {{ directory|upper }} [{{ tasks.storypoints }}]
+{%- endfilter %}
 {%- for pcontact in tasks.primary_contacts %}
 
-{{ '\033[1m' -}}
+{% filter colored("white", attrs=["bold"]) -%}
 ## {{ team.name(pcontact) }}'s tasks [{{ tasks.tasks_for(pcontact).storypoints }}]
-{{- '\x1b[00m' }}
+{%- endfilter %}
 {% for task in tasks.tasks_for(pcontact) %}
-- {{ '\033[93m' }}[{{ task["theme"] }}]{{ '\033[00m' }} {{ task["title"] }} [{{ task["storypoints"] }}]
+- {% filter colored("yellow") %}[{{ task["theme"] }}]{% endfilter %} {{ task["title"] }} [{{ task["storypoints"] }}]
 {%- endfor %}
 {%- endfor %}

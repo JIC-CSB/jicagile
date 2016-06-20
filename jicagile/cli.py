@@ -5,6 +5,7 @@ import os
 import argparse
 
 import colorama
+from termcolor import colored
 from jinja2 import Environment, FileSystemLoader
 
 import jicagile
@@ -15,6 +16,7 @@ colorama.init()
 
 HERE = os.path.dirname(os.path.realpath(__file__))
 env = Environment(loader=FileSystemLoader(os.path.join(HERE, "templates")))
+env.filters["colored"] = colored
 list_template = env.get_template("list.jinja2")
 
 

@@ -336,7 +336,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## None's tasks [1]
 
-- [] Basic task [1]
+[] Basic task [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
@@ -383,14 +383,14 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## Matthew's tasks [8]
 
-- [admin] Management stuff [8]
+[admin] Management stuff [8]
 
 ## Tjelvar's tasks [8]
 
-- [] Other stuff [1]
-- [admin] Email people [1]
-- [admin] Attempt to fill in appriasal form [5]
-- [fun] Have fun [1]
+[] Other stuff [1]
+[admin] Email people [1]
+[admin] Attempt to fill in appriasal form [5]
+[fun] Have fun [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
@@ -402,10 +402,10 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## Tjelvar's tasks [8]
 
-- [] Other stuff [1]
-- [admin] Email people [1]
-- [admin] Attempt to fill in appriasal form [5]
-- [fun] Have fun [1]
+[] Other stuff [1]
+[admin] Email people [1]
+[admin] Attempt to fill in appriasal form [5]
+[fun] Have fun [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 
@@ -432,7 +432,7 @@ class CLIFunctionalTests(unittest.TestCase):
 
 ## None's tasks [1]
 
-- [] Basic task [1]
+[] Basic task [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
 

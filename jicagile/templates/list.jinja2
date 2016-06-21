@@ -7,6 +7,6 @@
 ## {{ team.name(pcontact) }}'s tasks [{{ tasks.tasks_for(pcontact).storypoints }}]
 {%- endfilter %}
 {% for task in tasks.tasks_for(pcontact) %}
-- {% filter colored("yellow") %}[{{ task["theme"] }}]{% endfilter %} {{ task["title"] }} [{{ task["storypoints"] }}]
+{% filter colored("yellow") %}[{{ task["theme"] }}]{% endfilter %} {{ task["title"] }} [{{ task["storypoints"] }}]
 {%- endfor %}
 {%- endfor %}

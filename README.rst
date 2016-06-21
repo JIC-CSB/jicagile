@@ -42,7 +42,7 @@ story point sizes are 1, 3, 5 and 8.
 
 This will create a ``backlog`` directory and place a file named
 ``learn-how-to-use-agl-cmd-line.yml`` file in it. It will also
-create the directories ``current/{{todo,done}}``.
+create the directories ``current/{todo,done}``.
 
 To move the task to the current sprint.
 
@@ -92,7 +92,7 @@ You can add themes to your project.
     agl theme add admin "Emails, forms, meetings, etc"
     agl edit current/todo/email-friends-about-jicagile.yml --theme=admin
 
-Themes are stored in a .themes.yml file.
+Themes are stored in a ``.themes.yml`` file.
 
 It is also possible to add team members to your project.
 
@@ -101,11 +101,11 @@ It is also possible to add team members to your project.
     agl teammember add TO Tjelvar Olsson
     agl teammember add MH Matthew Hartley
 
-Team members  are stored in a .team.yml file.
+Team members  are stored in a ``.team.yml`` file.
 
 You can then associate a task with a primary contact. (This may not be
-very agile in that anyone is meant to pick up any task, but I find that
-it can be useful.)
+very agile in that anyone is meant to be able to pick up any task, but I find
+that it can be useful.)
 
 .. code-block:: bash
 
@@ -114,9 +114,9 @@ it can be useful.)
 In the above ``-p`` is the short hand for ``--primary-contact`` and
 ``-e`` is short hand for ``--theme``.
 
-Note that as the ``agl`` tool simply creates text files it can be
-used together with ``git``. It can be quite satisfying to have the
-agile project management file under version control on GitHub.
+Note that the ``agl`` tool simply creates text files. It can be therefore be
+used together with ``git``. It can be quite satisfying to have the agile
+project management files under version control on GitHub.
 
 Once you have had your sprint review meeting and all the relevant
 files have been moved to the ``current/done`` directory create a

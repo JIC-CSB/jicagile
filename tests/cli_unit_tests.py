@@ -146,5 +146,18 @@ class ThemeCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.subcommand, "rm")
         self.assertEqual(args.name, "admin")
 
+class TeamMemberCommandUnitTests(unittest.TestCase):
+
+    def test_add_usage(self):
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["teammember", "add", "TO", "Tjelvar", "Olsson"])
+        self.assertEqual(args.command, "teammember")
+        self.assertEqual(args.subcommand, "add")
+        self.assertEqual(args.lookup, "TO")
+        self.assertEqual(args.first_name, "Tjelvar")
+        self.assertEqual(args.last_name, "Olsson")
+
+
 if __name__ == "__main__":
     unittest.main()

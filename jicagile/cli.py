@@ -74,7 +74,16 @@ class CLI(object):
         theme_rm_parser = theme_subparsers.add_parser("rm", help="Remove a theme")
         theme_rm_parser.add_argument("name", help="Lookup name")
 
+        # The "teammember" command.
+        teammember_parser = subparsers.add_parser("teammember", help="Add or remove team members")
+        teammember_subparser = teammember_parser.add_subparsers(dest="subcommand")
+        teammember_add_parser = teammember_subparser.add_parser("add", help="Add a team member")
+        teammember_add_parser.add_argument("lookup", help="Lookup alias")
+        teammember_add_parser.add_argument("first_name", help="First name")
+        teammember_add_parser.add_argument("last_name", help="Last name")
+
         return parser.parse_args(args)
+
 
     def run(self, args):
         """Run the specified command."""
@@ -134,6 +143,18 @@ class CLI(object):
                 return
             del themes[args.name]
             themes.to_file(fpath)
+
+    def teammember(self, args):
+        """Add, remove or edit a team memebr from the .team.yml file."""
+        fpath = os.path.join(self.project.directory, ".team.yml")
+        team = jicagile.config.Team()
+        if os.path.isfile(fpath):
+            team = jicagile.config.Team.from_file(fpath)
+        if args.subcommand == "add":
+            team.add_member(args.lookup,
+                            args.first_name,
+                            args.last_name)
+            team.to_file(fpath)
 
 
 def main():

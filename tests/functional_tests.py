@@ -511,6 +511,29 @@ class TeamMemberFunctionalTests(unittest.TestCase):
         from_file_team = Team.from_file(fpath)
         self.assertEqual(team, from_file_team)
 
+    def test_teammember_command(self):
+        from jicagile.cli import CLI
+        from jicagile.config import Team
+        cli = CLI(project_directory=TMP_DIR)
+
+        # No .themes.yml file exists yet.
+        team_fpath = os.path.join(TMP_DIR, ".team.yml")
+        self.assertFalse(os.path.isfile(team_fpath))
+
+        args = cli.parse_args(["teammember", "add", "TO", "Tjelvar", "Olsson"])
+        cli.run(args)
+        self.assertTrue(os.path.isfile(team_fpath))
+        team = Team.from_file(team_fpath)
+        self.assertEqual(len(team), 1)
+        self.assertEqual(team["TO"].first_name, "Tjelvar")
+        self.assertEqual(team["TO"].last_name, "Olsson")
+
+        args = cli.parse_args(["teammember", "add", "MH", "Matthew",  "Hartley"])
+        cli.run(args)
+        team = Team.from_file(team_fpath)
+        self.assertEqual(len(team), 2)
+
+
 
 if __name__ == "__main__":
     unittest.main()

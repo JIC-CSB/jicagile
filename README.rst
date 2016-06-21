@@ -94,18 +94,14 @@ You can add themes to your project.
 
 Themes are stored in a .themes.yml file.
 
-You can specify a team as well by manually creating a ``.team.yml`` file
-in the agile project directory.
+It is also possible to add team members to your project.
 
-.. code-block:: yaml
+.. code-block:: bash
 
-    ---
-    - lookup: TO
-      first_name: Tjelvar
-      last_name: Olsson
-    - lookup: MH
-      first_name: Matthew
-      last_name: Hartley
+    agl teammember add TO Tjelvar Olsson
+    agl teammember add MH Matthew Hartley
+
+Team members  are stored in a .team.yml file.
 
 You can then associate a task with a primary contact. (This may not be
 very agile in that anyone is meant to pick up any task, but I find that
@@ -140,6 +136,12 @@ todays date using a year-month-day scheme.
 
 Release notes
 -------------
+
+0.3.0
+~~~~~
+
+- Added ability to add and remove team members from the command line
+- Updated the format of the output from the ``agl list`` command
 
 0.2.0
 ~~~~~

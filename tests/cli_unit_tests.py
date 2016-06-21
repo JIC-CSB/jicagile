@@ -158,6 +158,13 @@ class TeamMemberCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.first_name, "Tjelvar")
         self.assertEqual(args.last_name, "Olsson")
 
+    def test_rm_usage(self):
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["teammember", "rm", "TO"])
+        self.assertEqual(args.command, "teammember")
+        self.assertEqual(args.subcommand, "rm")
+        self.assertEqual(args.lookup, "TO")
 
 if __name__ == "__main__":
     unittest.main()

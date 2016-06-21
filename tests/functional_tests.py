@@ -533,6 +533,15 @@ class TeamMemberFunctionalTests(unittest.TestCase):
         team = Team.from_file(team_fpath)
         self.assertEqual(len(team), 2)
 
+        args = cli.parse_args(["teammember", "rm", "TO"])
+        cli.run(args)
+        team = Team.from_file(team_fpath)
+        self.assertEqual(len(team), 1)
+        self.assertFalse("TO" in team)
+        self.assertTrue("MH" in team)
+
+        args = cli.parse_args(["teammember", "rm", "TO"])
+        cli.run(args)
 
 
 if __name__ == "__main__":

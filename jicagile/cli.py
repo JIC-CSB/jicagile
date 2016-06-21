@@ -81,6 +81,8 @@ class CLI(object):
         teammember_add_parser.add_argument("lookup", help="Lookup alias")
         teammember_add_parser.add_argument("first_name", help="First name")
         teammember_add_parser.add_argument("last_name", help="Last name")
+        teammember_rm_parser = teammember_subparser.add_parser("rm", help="Remove a team member")
+        teammember_rm_parser.add_argument("lookup", help="Lookup alias")
 
         return parser.parse_args(args)
 
@@ -154,6 +156,13 @@ class CLI(object):
             team.add_member(args.lookup,
                             args.first_name,
                             args.last_name)
+            team.to_file(fpath)
+        elif args.subcommand == "rm":
+            if args.lookup not in team:
+                print("No team member lookup alias: {}".format(args.lookup))
+                print("Existing lookup aliases: {}".format(", ".join(team.lookups)))
+                return
+            del team[args.lookup]
             team.to_file(fpath)
 
 

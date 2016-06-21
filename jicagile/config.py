@@ -52,10 +52,23 @@ class Team(_Config):
             self.first_name = first_name
             self.last_name = last_name
 
+        def __eq__(self, other):
+            return (self.lookup == other.lookup) and (self.first_name == other.first_name) and (self.last_name == other.last_name)
+
+
     def name(self, lookup):
         if lookup in self:
             return self[lookup].first_name
         return lookup
+
+    def to_file(self, fpath):
+        """Write a configuration to file."""
+        with open(fpath, "w") as fh:
+            fh.write("---\n")
+            for m in self.values():
+                fh.write("- lookup: {}\n".format(m.lookup))
+                fh.write("  first_name: {}\n".format(m.first_name))
+                fh.write("  last_name: {}\n".format(m.last_name))
 
 
 class Themes(_Config):
@@ -66,6 +79,7 @@ class Themes(_Config):
 
         def __eq__(self, other):
             return (self.lookup == other.lookup) and (self.description == other.description)
+
         def __init__(self, lookup, description):
             self.lookup = lookup
             self.description = description

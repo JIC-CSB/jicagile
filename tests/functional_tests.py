@@ -490,5 +490,27 @@ class ThemesFunctionalTests(unittest.TestCase):
         cli.run(args)
 
 
+class TeamMemberFunctionalTests(unittest.TestCase):
+
+    def setUp(self):
+        if not os.path.isdir(TMP_DIR):
+            os.mkdir(TMP_DIR)
+
+    def tearDown(self):
+        shutil.rmtree(TMP_DIR)
+
+    def test_to_file(self):
+        from jicagile.config import Team
+        fpath = os.path.join(TMP_DIR, ".team.yml")
+        self.assertFalse(os.path.isfile(fpath))
+
+        team = Team()
+        team.add_member("TO", "Tjelvar", "Olsson")
+        team.to_file(fpath)
+        self.assertTrue(os.path.isfile(fpath))
+        from_file_team = Team.from_file(fpath)
+        self.assertEqual(team, from_file_team)
+
+
 if __name__ == "__main__":
     unittest.main()

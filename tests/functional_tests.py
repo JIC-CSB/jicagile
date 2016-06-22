@@ -6,6 +6,8 @@ import sys
 from contextlib import contextmanager
 from StringIO import StringIO
 import re
+from subprocess import Popen, PIPE
+import tempfile
 
 ansi_escape = re.compile(r'\x1b[^m]*m')
 
@@ -22,7 +24,7 @@ def capture_sys_output():
 
 HERE = os.path.dirname(__file__)
 DATA_DIR = os.path.join(HERE, 'data')
-TMP_DIR = os.path.join(HERE, 'tmp')
+TMP_DIR = tempfile.mkdtemp()
 
 
 class BasicWorkflowFunctionalTests(unittest.TestCase):
@@ -160,6 +162,18 @@ class ProjectFunctionalTests(unittest.TestCase):
         project = jicagile.Project(TMP_DIR, themes_fpath=fpath)
         self.assertEqual(len(project.themes), 2)
         self.assertEqual(project.themes.lookups, set(["admin", "sysadmin"]))
+
+    def test_is_git_repo(self):
+        import jicagile
+        cur_dir = os.getcwd()
+        os.chdir(TMP_DIR)
+        project = jicagile.Project(".")
+        self.assertFalse(project.is_git_repo)
+        process = Popen(["git", "init"], stdout=PIPE, stderr=PIPE)
+        stdout, stderr = process.communicate()
+        self.assertTrue(project.is_git_repo)
+        os.chdir(cur_dir)
+
 
 
 class TaskFunctionalTests(unittest.TestCase):

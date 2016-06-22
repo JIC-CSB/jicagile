@@ -3,6 +3,7 @@
 import os
 import os.path
 from operator import itemgetter
+from subprocess import Popen, PIPE
 
 import yaml
 from slugify import slugify
@@ -116,6 +117,15 @@ class Project(object):
     def current_done_directory(self):
         """Return the path to the current 'done' directory."""
         return os.path.join(self.current_sprint_directory, "done")
+
+    @property
+    def is_git_repo(self):
+        """Return True if the project directory is under Git version control."""
+        process = Popen(["git", "rev-parse"], stdout=PIPE, stderr=PIPE)
+        stdout, stderr = process.communicate()
+        if process.returncode != 0:
+            return False
+        return True
 
     def add_task(self,
                  title,

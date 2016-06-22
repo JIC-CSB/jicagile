@@ -9,10 +9,12 @@ class _Config(dict):
     def from_yaml(cls, yaml_str):
         """Return a configuration created from a yaml string."""
         data = yaml.load(yaml_str)
-        team = cls()
+        conf = cls()
+        if data is None:
+            return conf
         for item in data:
-            team.add_member(**item)
-        return team
+            conf.add_member(**item)
+        return conf
 
     @classmethod
     def from_file(cls, fpath):

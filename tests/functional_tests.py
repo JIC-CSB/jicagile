@@ -489,6 +489,23 @@ class ThemesFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["theme", "rm", "admin"])
         cli.run(args)
 
+    def test_add_to_empty(self):
+        from jicagile.cli import CLI
+        from jicagile.config import Themes
+        cli = CLI(project_directory=TMP_DIR)
+
+        # Add one to create the .theme.yml file.
+        args = cli.parse_args(["theme", "add", "admin", "stuff we need to do"])
+        cli.run(args)
+
+        # Remove it to create an empty file.
+        args = cli.parse_args(["theme", "rm", "admin"])
+        cli.run(args)
+
+        # Add something to the empty file.
+        args = cli.parse_args(["theme", "add", "admin", "stuff we need to do"])
+        cli.run(args)
+
 
 class TeamMemberFunctionalTests(unittest.TestCase):
 

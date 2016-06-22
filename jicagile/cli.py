@@ -3,6 +3,7 @@
 import sys
 import os
 import argparse
+from subprocess import Popen, PIPE
 
 import colorama
 from termcolor import colored
@@ -25,6 +26,15 @@ class CLI(object):
 
     def __init__(self):
         self.project = jicagile.Project(".")
+
+    @property
+    def is_git_repo(self):
+        """Return True if the project directory is under Git version control."""
+        process = Popen(["git", "rev-parse"], stdout=PIPE, stderr=PIPE)
+        stdout, stderr = process.communicate()
+        if process.returncode != 0:
+            return False
+        return True
 
     def parse_args(self, args):
         """Return parsed arguments."""

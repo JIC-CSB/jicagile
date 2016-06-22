@@ -167,16 +167,6 @@ class ProjectFunctionalTests(unittest.TestCase):
         self.assertEqual(len(project.themes), 2)
         self.assertEqual(project.themes.lookups, set(["admin", "sysadmin"]))
 
-    def test_is_git_repo(self):
-        import jicagile
-        os.chdir(self.tmp_dir)
-        project = jicagile.Project(".")
-        self.assertFalse(project.is_git_repo)
-        process = Popen(["git", "init"], stdout=PIPE, stderr=PIPE)
-        stdout, stderr = process.communicate()
-        self.assertTrue(project.is_git_repo)
-        os.chdir(CUR_DIR)
-
 
 
 class TaskFunctionalTests(unittest.TestCase):
@@ -458,6 +448,15 @@ class CLIFunctionalTests(unittest.TestCase):
 [] Basic task [1]
 """
             self.assertEqual(text, expected, "\n" + text + expected)
+
+    def test_is_git_repo(self):
+        from jicagile.cli import CLI
+        cli = CLI()
+        self.assertFalse(cli.is_git_repo)
+        process = Popen(["git", "init"], stdout=PIPE, stderr=PIPE)
+        stdout, stderr = process.communicate()
+        self.assertTrue(cli.is_git_repo)
+
 
 class ThemesFunctionalTests(unittest.TestCase):
 

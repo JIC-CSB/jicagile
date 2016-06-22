@@ -24,27 +24,30 @@ def capture_sys_output():
 
 HERE = os.path.dirname(__file__)
 DATA_DIR = os.path.join(HERE, 'data')
-TMP_DIR = tempfile.mkdtemp()
+CUR_DIR = os.getcwd()
 
 
 class BasicWorkflowFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_basic_workflow(self):
         import jicagile
 
         # When we start off a backlog directory has not yet been created.
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
         self.assertFalse(os.path.isdir(backlog_dir))
 
         # However, once a project is initialised such a directory is created.
-        project = jicagile.Project(TMP_DIR)
+        project = jicagile.Project(self.tmp_dir)
         self.assertTrue(os.path.isdir(backlog_dir))
         self.assertTrue(isinstance(project, jicagile.Project))
 
@@ -81,41 +84,42 @@ class BasicWorkflowFunctionalTests(unittest.TestCase):
         self.assertEqual(task["primary_contact"], "TO")
 
         # The task has also been written to file.
-        fpath = os.path.join(TMP_DIR, "current", "todo", "say-hello-now.yml")
+        fpath = os.path.join(self.tmp_dir, "current", "todo", "say-hello-now.yml")
         self.assertTrue(os.path.isfile(fpath))
 
 
 class ProjectFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_project_initialisation(self):
         import jicagile
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
-        current_sprint_dir = os.path.join(TMP_DIR, "current")
-        current_todo_dir = os.path.join(TMP_DIR, "current", "todo")
-        current_done_dir = os.path.join(TMP_DIR, "current", "done")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
+        current_sprint_dir = os.path.join(self.tmp_dir, "current")
+        current_todo_dir = os.path.join(self.tmp_dir, "current", "todo")
+        current_done_dir = os.path.join(self.tmp_dir, "current", "done")
         self.assertFalse(os.path.isdir(backlog_dir))
         self.assertFalse(os.path.isdir(current_sprint_dir))
         self.assertFalse(os.path.isdir(current_todo_dir))
         self.assertFalse(os.path.isdir(current_done_dir))
 
-        project = jicagile.Project(TMP_DIR)
-        self.assertEqual(project.directory, TMP_DIR)
+        project = jicagile.Project(self.tmp_dir)
+        self.assertEqual(project.directory, self.tmp_dir)
         self.assertEqual(project.backlog_directory,
-                         os.path.join(TMP_DIR, "backlog"))
+                         os.path.join(self.tmp_dir, "backlog"))
         self.assertEqual(project.current_sprint_directory,
-                         os.path.join(TMP_DIR, "current"))
+                         os.path.join(self.tmp_dir, "current"))
         self.assertEqual(project.current_todo_directory,
-                         os.path.join(TMP_DIR, "current", "todo"))
+                         os.path.join(self.tmp_dir, "current", "todo"))
         self.assertEqual(project.current_done_directory,
-                         os.path.join(TMP_DIR, "current", "done"))
+                         os.path.join(self.tmp_dir, "current", "done"))
 
         self.assertTrue(os.path.isdir(backlog_dir))
         self.assertTrue(os.path.isdir(current_sprint_dir))
@@ -125,14 +129,14 @@ class ProjectFunctionalTests(unittest.TestCase):
     def test_creation_of_an_existing_project(self):
         import jicagile
 
-        p1 = jicagile.Project(TMP_DIR)
-        p2 = jicagile.Project(TMP_DIR)
+        p1 = jicagile.Project(self.tmp_dir)
+        p2 = jicagile.Project(self.tmp_dir)
         self.assertEqual(p1, p2)
 
     def test_team(self):
         import jicagile
 
-        fpath = os.path.join(TMP_DIR, "team.yml")
+        fpath = os.path.join(self.tmp_dir, "team.yml")
         with open(fpath, "w") as fh:
             fh.write("""---
 - lookup: TO
@@ -143,14 +147,14 @@ class ProjectFunctionalTests(unittest.TestCase):
   last_name: Hartley
 """)
 
-        project = jicagile.Project(TMP_DIR, team_fpath=fpath)
+        project = jicagile.Project(self.tmp_dir, team_fpath=fpath)
         self.assertEqual(len(project.team), 2)
         self.assertEqual(project.team.lookups, set(["TO", "MH"]))
 
     def test_themes(self):
         import jicagile
 
-        fpath = os.path.join(TMP_DIR, "themes.yml")
+        fpath = os.path.join(self.tmp_dir, "themes.yml")
         with open(fpath, "w") as fh:
             fh.write("""---
 - lookup: admin
@@ -159,35 +163,35 @@ class ProjectFunctionalTests(unittest.TestCase):
   description: systems administraiton
 """)
 
-        project = jicagile.Project(TMP_DIR, themes_fpath=fpath)
+        project = jicagile.Project(self.tmp_dir, themes_fpath=fpath)
         self.assertEqual(len(project.themes), 2)
         self.assertEqual(project.themes.lookups, set(["admin", "sysadmin"]))
 
     def test_is_git_repo(self):
         import jicagile
-        cur_dir = os.getcwd()
-        os.chdir(TMP_DIR)
+        os.chdir(self.tmp_dir)
         project = jicagile.Project(".")
         self.assertFalse(project.is_git_repo)
         process = Popen(["git", "init"], stdout=PIPE, stderr=PIPE)
         stdout, stderr = process.communicate()
         self.assertTrue(project.is_git_repo)
-        os.chdir(cur_dir)
+        os.chdir(CUR_DIR)
 
 
 
 class TaskFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_from_file(self):
         import jicagile
-        fpath = os.path.join(TMP_DIR, "test.yml")
+        fpath = os.path.join(self.tmp_dir, "test.yml")
         with open(fpath, "w") as fh:
             fh.write("""---\ntitle: Test\nstorypoints: 3""")
         task = jicagile.Task.from_file(fpath)
@@ -198,15 +202,16 @@ class TaskFunctionalTests(unittest.TestCase):
 class TeamFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_team_from_file(self):
         import jicagile
-        fpath = os.path.join(TMP_DIR, "team.yml")
+        fpath = os.path.join(self.tmp_dir, "team.yml")
         with open(fpath, "w") as fh:
             fh.write("""---
 - lookup: TO
@@ -224,21 +229,22 @@ class TeamFunctionalTests(unittest.TestCase):
 class TaskCollectionFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_from_directory(self):
         import jicagile
-        project = jicagile.Project(TMP_DIR)
+        project = jicagile.Project(self.tmp_dir)
         task1 = project.add_task("Basic task", 1)
         task2 = project.add_task("Complex task", 8)
         expected = jicagile.TaskCollection()
         expected.extend([task1, task2])
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
         self.assertEqual(jicagile.TaskCollection.from_directory(backlog_dir),
                          expected)
 
@@ -246,20 +252,23 @@ class TaskCollectionFunctionalTests(unittest.TestCase):
 class CLIFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_add(self):
         import jicagile
         from jicagile.cli import CLI
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
         args = cli.parse_args(["add", "Basic task", "1"])
         cli.run(args)
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
         self.assertTrue(os.path.isfile(task_fpath))
 
@@ -270,11 +279,11 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_add_to_current(self):
         import jicagile
         from jicagile.cli import CLI
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
         args = cli.parse_args(["add", "-c", "Basic task", "1"])
         cli.run(args)
 
-        current_todo_dir = os.path.join(TMP_DIR, "current", "todo")
+        current_todo_dir = os.path.join(self.tmp_dir, "current", "todo")
         task_fpath = os.path.join(current_todo_dir, "basic-task.yml")
         self.assertTrue(os.path.isfile(task_fpath))
 
@@ -285,7 +294,7 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_add_with_theme(self):
         import jicagile
         from jicagile.cli import CLI
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
 
         themes = jicagile.config.Themes()
         themes.add_member("admin", "grants, appraisals, etc")
@@ -294,7 +303,7 @@ class CLIFunctionalTests(unittest.TestCase):
         args = cli.parse_args(["add", "Basic task", "1", "-e", "admin"])
         cli.run(args)
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
         self.assertTrue(os.path.isfile(task_fpath))
 
@@ -304,11 +313,11 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_edit(self):
         import jicagile
         from jicagile.cli import CLI
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
         args = cli.parse_args(["add", "Basic task", "1"])
         cli.run(args)
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
         task_fpath = os.path.join(backlog_dir, "basic-task.yml")
 
         team = jicagile.config.Team()
@@ -337,11 +346,11 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_list(self):
         import jicagile
         from jicagile.cli import CLI
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
         args = cli.parse_args(["add", "Basic task", "1"])
         cli.run(args)
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
         args = cli.parse_args(["list", backlog_dir])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
@@ -433,11 +442,11 @@ class CLIFunctionalTests(unittest.TestCase):
     def test_list_backlog_with_trailing_slash(self):
         import jicagile
         from jicagile.cli import CLI
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
         args = cli.parse_args(["add", "Basic task", "1"])
         cli.run(args)
 
-        backlog_dir = os.path.join(TMP_DIR, "backlog/")
+        backlog_dir = os.path.join(self.tmp_dir, "backlog/")
         args = cli.parse_args(["list", backlog_dir])
         with capture_sys_output() as (stdout, stderr):
             cli.run(args)
@@ -453,15 +462,18 @@ class CLIFunctionalTests(unittest.TestCase):
 class ThemesFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_to_file(self):
         from jicagile.config import Themes
-        fpath = os.path.join(TMP_DIR, ".themes.yml")
+        fpath = os.path.join(self.tmp_dir, ".themes.yml")
         self.assertFalse(os.path.isfile(fpath))
 
         themes = Themes()
@@ -475,10 +487,10 @@ class ThemesFunctionalTests(unittest.TestCase):
     def test_theme_command(self):
         from jicagile.cli import CLI
         from jicagile.config import Themes
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
 
         # No .themes.yml file exists yet.
-        themes_fpath = os.path.join(TMP_DIR, ".themes.yml")
+        themes_fpath = os.path.join(self.tmp_dir, ".themes.yml")
         self.assertFalse(os.path.isfile(themes_fpath))
 
         args = cli.parse_args(["theme", "add", "admin", "stuff we need to do"])
@@ -506,7 +518,7 @@ class ThemesFunctionalTests(unittest.TestCase):
     def test_add_to_empty(self):
         from jicagile.cli import CLI
         from jicagile.config import Themes
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
 
         # Add one to create the .theme.yml file.
         args = cli.parse_args(["theme", "add", "admin", "stuff we need to do"])
@@ -524,15 +536,18 @@ class ThemesFunctionalTests(unittest.TestCase):
 class TeamMemberFunctionalTests(unittest.TestCase):
 
     def setUp(self):
-        if not os.path.isdir(TMP_DIR):
-            os.mkdir(TMP_DIR)
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
 
     def tearDown(self):
-        shutil.rmtree(TMP_DIR)
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_to_file(self):
         from jicagile.config import Team
-        fpath = os.path.join(TMP_DIR, ".team.yml")
+        fpath = os.path.join(self.tmp_dir, ".team.yml")
         self.assertFalse(os.path.isfile(fpath))
 
         team = Team()
@@ -545,10 +560,10 @@ class TeamMemberFunctionalTests(unittest.TestCase):
     def test_teammember_command(self):
         from jicagile.cli import CLI
         from jicagile.config import Team
-        cli = CLI(project_directory=TMP_DIR)
+        cli = CLI()
 
         # No .themes.yml file exists yet.
-        team_fpath = os.path.join(TMP_DIR, ".team.yml")
+        team_fpath = os.path.join(self.tmp_dir, ".team.yml")
         self.assertFalse(os.path.isfile(team_fpath))
 
         args = cli.parse_args(["teammember", "add", "TO", "Tjelvar", "Olsson"])

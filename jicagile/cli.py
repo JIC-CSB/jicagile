@@ -23,8 +23,8 @@ list_template = env.get_template("list.jinja2")
 class CLI(object):
     """Command line interface class."""
 
-    def __init__(self, project_directory="."):
-        self.project = jicagile.Project(project_directory)
+    def __init__(self):
+        self.project = jicagile.Project(".")
 
     def parse_args(self, args):
         """Return parsed arguments."""

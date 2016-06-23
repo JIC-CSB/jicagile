@@ -205,7 +205,7 @@ class GitIntegrationTests(unittest.TestCase):
         with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
             mock_is_git_repo.return_value = True
             cli.run(args)
-        fpath = os.path.join(".", ".theme.yml")
+        fpath = os.path.join(".", ".themes.yml")
         patch_popen.assert_called_with(["git", "add", fpath])
 
     @mock.patch('subprocess.Popen')

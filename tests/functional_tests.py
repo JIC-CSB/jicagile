@@ -8,6 +8,9 @@ from StringIO import StringIO
 import re
 from subprocess import Popen, PIPE
 import tempfile
+import subprocess
+
+import mock
 
 ansi_escape = re.compile(r'\x1b[^m]*m')
 
@@ -314,7 +317,7 @@ class CLIFunctionalTests(unittest.TestCase):
         task_from_file = jicagile.Task.from_file(task_fpath)
         self.assertEqual(task_from_file["theme"], "admin")
 
-    def test_edit(self):
+    def test_edit_without_git(self):
         import jicagile
         from jicagile.cli import CLI
         cli = CLI()
@@ -346,6 +349,31 @@ class CLIFunctionalTests(unittest.TestCase):
         self.assertEqual(task_from_file["primary_contact"], "TO")
         self.assertEqual(task_from_file["theme"], "admin")
 
+    @mock.patch('subprocess.Popen')
+    def test_edit_with_git(self, patch_popen):
+        process_mock = mock.MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        import jicagile
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["add", "Basic task", "1"])
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = False  # We are not testing integration here.
+            cli.run(args)
+
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
+        task_fpath = os.path.join(backlog_dir, "basic-task.yml")
+
+
+        args = cli.parse_args(["edit", task_fpath, "-s", "3"])
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = True  # We are testing integration here.
+            cli.run(args)
+        patch_popen.assert_called_with(["git", "add", task_fpath])
+
+
     def test_edit_title_without_git(self):
         import jicagile
         from jicagile.cli import CLI
@@ -370,6 +398,39 @@ class CLIFunctionalTests(unittest.TestCase):
 
         task_from_file = jicagile.Task.from_file(new_task_fpath)
         self.assertEqual(task_from_file["title"], "Complicated task")
+
+    @mock.patch('subprocess.Popen')
+    def test_edit_title_with_git(self, patch_popen):
+        process_mock = mock.MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        import jicagile
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["add", "Basic task", "1"])
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = False  # Just creating a task to work with not testing git integration.
+            cli.run(args)
+
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
+        org_task_fpath = os.path.join(backlog_dir, "basic-task.yml")
+        new_task_fpath = os.path.join(backlog_dir, "complicated-task.yml")
+
+        self.assertTrue(os.path.isfile(org_task_fpath))
+        self.assertFalse(os.path.isfile(new_task_fpath))
+
+        args = cli.parse_args(["edit",
+                              org_task_fpath,
+                              "-t", "Complicated task"])
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = True  # This is where we test git integration.
+            cli.run(args)
+
+        calls = [mock.call(["git", "add", org_task_fpath]),
+                 mock.call(["git", "mv", org_task_fpath, new_task_fpath])]
+        self.assertEqual(patch_popen.call_args_list, calls)
+
 
     def test_list(self):
         import jicagile

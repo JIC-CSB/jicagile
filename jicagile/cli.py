@@ -128,8 +128,16 @@ class CLI(object):
                                              args.storypoints,
                                              args.primary_contact,
                                              args.theme)
+        if self.is_git_repo:
+            process = subprocess.Popen(["git", "add", args.fpath])
+            process.communicate()
+
         if fpath != args.fpath:
-            process = subprocess.Popen(["mv", args.fpath, fpath])
+            l = []
+            if self.is_git_repo:
+                l = ["git"]
+            l.extend(["mv", args.fpath, fpath])
+            process = subprocess.Popen(l)
             process.communicate()
 
 

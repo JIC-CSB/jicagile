@@ -193,7 +193,6 @@ class CLI(object):
             process = subprocess.Popen(["git", "add", fpath])
             process.communicate()
 
-
     def teammember(self, args):
         """Add, remove or edit a team memebr from the .team.yml file."""
         fpath = os.path.join(self.project.directory, ".team.yml")
@@ -212,6 +211,10 @@ class CLI(object):
                 return
             del team[args.lookup]
             team.to_file(fpath)
+
+        if self.is_git_repo:
+            process = subprocess.Popen(["git", "add", fpath])
+            process.communicate()
 
 
 def main():

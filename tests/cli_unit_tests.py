@@ -87,7 +87,7 @@ class AddCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.theme, "sysadmin")
 
     @mock.patch('subprocess.Popen')
-    def test_mv_without_git(self, patch_popen):
+    def test_add_without_git(self, patch_popen):
         process_mock = MagicMock()
         attrs = {"communicate.return_value": None}
         process_mock.configure(**attrs)
@@ -102,7 +102,7 @@ class AddCommandUnitTests(unittest.TestCase):
         patch_popen.assert_not_called()
 
     @mock.patch('subprocess.Popen')
-    def test_mv_without_git(self, patch_popen):
+    def test_add_with_git(self, patch_popen):
         process_mock = MagicMock()
         attrs = {"communicate.return_value": None}
         process_mock.configure(**attrs)

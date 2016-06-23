@@ -33,7 +33,7 @@ a directory where you want to store your agile project management
 files.
 
 The ``agl`` tool comes with built-in Git integration. To enable
-this simply initialise the project directory asa git repository.
+this simply initialise the project directory as a git repository.
 
 .. code-block:: bash
 

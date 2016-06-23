@@ -457,6 +457,26 @@ class CLIFunctionalTests(unittest.TestCase):
         stdout, stderr = process.communicate()
         self.assertTrue(cli.is_git_repo)
 
+    def test_mv(self):
+        import jicagile
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["add", "Basic task", "1"])
+        cli.run(args)
+
+        src_fpath = os.path.join("backlog", "basic-task.yml")
+        todo = os.path.join("current", "todo")
+        dest_fpath = os.path.join(todo, "basic-task.yml")
+
+        self.assertTrue(os.path.isfile(src_fpath))
+
+        args = cli.parse_args(["mv", src_fpath, todo])
+        cli.run(args)
+
+        self.assertFalse(os.path.isfile(src_fpath))
+        self.assertTrue(os.path.isfile(dest_fpath))
+
+
 
 class ThemesFunctionalTests(unittest.TestCase):
 

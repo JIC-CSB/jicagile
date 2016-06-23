@@ -146,6 +146,7 @@ class ThemeCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.subcommand, "rm")
         self.assertEqual(args.name, "admin")
 
+
 class TeamMemberCommandUnitTests(unittest.TestCase):
 
     def test_add_usage(self):
@@ -165,6 +166,17 @@ class TeamMemberCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.command, "teammember")
         self.assertEqual(args.subcommand, "rm")
         self.assertEqual(args.lookup, "TO")
+
+
+class MvCommandUnitTests(unittest.TestCase):
+
+    def test_mv_usage(self):
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["mv", "path/to/move", "/dest/"])
+        self.assertEqual(args.command, "mv")
+        self.assertEqual(args.src, "path/to/move")
+        self.assertEqual(args.dest, "/dest/")
 
 if __name__ == "__main__":
     unittest.main()

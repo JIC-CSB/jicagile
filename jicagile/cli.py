@@ -75,6 +75,11 @@ class CLI(object):
         list_parser.add_argument("-p", "--primary-contact",
                                  help="Primary contact")
 
+        # The "mv" command.
+        mv_parser = subparsers.add_parser("mv", help="Move a task or a directory of tasks")
+        mv_parser.add_argument("src", help="File or directory to move")
+        mv_parser.add_argument("dest", help="Destination to move to")
+
         # The "theme" command.
         theme_parser = subparsers.add_parser("theme", help="Add or remove themes")
         theme_subparsers = theme_parser.add_subparsers(dest="subcommand")
@@ -137,6 +142,11 @@ class CLI(object):
         print(list_template.render(tasks=tasks,
                                               directory=directory,
                                               team=self.project.team))
+
+    def mv(self, args):
+        """Move a task or a directory of tasks."""
+        process = Popen(["mv", args.src, args.dest])
+        process.communicate()
 
     def theme(self, args):
         """Add or remove a theme from the .theme.yml file."""

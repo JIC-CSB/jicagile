@@ -123,7 +123,10 @@ class Project(object):
                  primary_contact=None,
                  theme=None,
                  current=False):
-        """Add a task to the backlog."""
+        """Add a task to the backlog.
+
+        :returns: :class:`jicagile.Task` and fpath
+        """
         task = Task(title, storypoints, primary_contact=primary_contact, theme=theme)
         directory = self.backlog_directory
         if current:
@@ -139,10 +142,20 @@ class Project(object):
                   storypoints=None,
                   primary_contact=None,
                   theme=None):
-        """Edit an exiting task."""
+        """Edit an exiting task.
+
+        If the title is changed the fpath returned is the suggested new name of
+        the file. However, the changes are made to the old file name and it is
+        up to the caller to make the change to the file name.
+
+        :returns: :class:`jicagile.Task` and fpath
+        """
         task = Task.from_file(fpath)
+        new_fpath = fpath
         if title is not None:
             task["title"] = title
+            directory = os.path.dirname(fpath)
+            new_fpath = task.fpath(directory)
         if storypoints is not None:
             task["storypoints"] = storypoints
         if primary_contact is not None:
@@ -151,4 +164,4 @@ class Project(object):
             task["theme"] = theme
         with open(fpath, "w") as fh:
             yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
-        return task
+        return task, new_fpath

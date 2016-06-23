@@ -67,13 +67,21 @@ class BasicWorkflowFunctionalTests(unittest.TestCase):
         self.assertEqual(task, task_from_file)
 
         # It is possible to edit the task.
-        project.edit_task(fpath, storypoints=1)
+        task, new_fpath = project.edit_task(fpath, storypoints=1)
         task_from_file = jicagile.Task.from_file(fpath)
         self.assertEqual(task_from_file["storypoints"], 1)
-        project.edit_task(fpath, title="Create a fit-for-purpose agile tool")
+        self.assertEqual(task, task_from_file)
+        self.assertEqual(fpath, new_fpath)
+
+        task, new_fpath = project.edit_task(fpath, title="Create a fit-for-purpose agile tool")
         task_from_file = jicagile.Task.from_file(fpath)
         self.assertEqual(task_from_file["title"],
                          "Create a fit-for-purpose agile tool")
+        self.assertEqual(task, task_from_file)
+        self.assertEqual(new_fpath,
+                         os.path.join(backlog_dir,
+                                      "create-a-fit-for-purpose-agile-tool.yml"))
+
         project.edit_task(fpath, primary_contact="TO")
         task_from_file = jicagile.Task.from_file(fpath)
         self.assertEqual(task_from_file["primary_contact"], "TO")

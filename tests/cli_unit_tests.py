@@ -5,8 +5,8 @@ import sys
 from contextlib import contextmanager
 from StringIO import StringIO
 
+import mock
 from mock import MagicMock
-
 
 @contextmanager
 def capture_sys_output():
@@ -177,6 +177,39 @@ class MvCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.command, "mv")
         self.assertEqual(args.src, "path/to/move")
         self.assertEqual(args.dest, "/dest/")
+
+    @mock.patch('subprocess.Popen')
+    def test_mv_without_git(self, patch_popen):
+        process_mock = MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["mv", "path/to/move", "/dest/"])
+
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = False
+            cli.run(args)
+        patch_popen.assert_called_with(["mv", "path/to/move", "/dest/"])
+
+    @mock.patch('subprocess.Popen')
+    def test_mv_with_git(self, patch_popen):
+        process_mock = MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        from jicagile.cli import CLI
+        cli = CLI()
+
+        args = cli.parse_args(["mv", "path/to/move", "/dest/"])
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = True
+            cli.run(args)
+
+        patch_popen.assert_called_with(["git", "mv", "path/to/move", "/dest/"])
+
+
 
 if __name__ == "__main__":
     unittest.main()

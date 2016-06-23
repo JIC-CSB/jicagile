@@ -3,7 +3,7 @@
 import sys
 import os
 import argparse
-from subprocess import Popen, PIPE
+import subprocess
 
 import colorama
 from termcolor import colored
@@ -30,7 +30,9 @@ class CLI(object):
     @property
     def is_git_repo(self):
         """Return True if the project directory is under Git version control."""
-        process = Popen(["git", "rev-parse"], stdout=PIPE, stderr=PIPE)
+        process = subprocess.Popen(["git", "rev-parse"],
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
         if process.returncode != 0:
             return False
@@ -145,7 +147,12 @@ class CLI(object):
 
     def mv(self, args):
         """Move a task or a directory of tasks."""
-        process = Popen(["mv", args.src, args.dest])
+        l = []
+        if self.is_git_repo:
+            l = ["git"]
+        l.extend(["mv", args.src, args.dest])
+
+        process = subprocess.Popen(l)
         process.communicate()
 
     def theme(self, args):

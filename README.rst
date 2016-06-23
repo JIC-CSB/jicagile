@@ -32,6 +32,16 @@ When you run the ``agl`` command it assumes that you are in
 a directory where you want to store your agile project management
 files.
 
+The ``agl`` tool comes with built-in Git integration. To enable
+this simply initialise the project directory asa git repository.
+
+.. code-block:: bash
+
+    git init
+
+The step above is optional, but highly recommended. Git is great.
+
+Now let's illustrate how to add a task to our agile project.
 The command below creates a task with the title
 ``"Learn how to use agl cmd line"`` of size 3. The available
 story point sizes are 1, 3, 5 and 8.
@@ -48,13 +58,13 @@ To move the task to the current sprint.
 
 .. code-block:: bash
 
-    mv backlog/learn-how-to-use-agl-cmd-line.yml current/todo
+    agl mv backlog/learn-how-to-use-agl-cmd-line.yml current/todo
 
 To mark the task as done.
 
 .. code-block:: bash
 
-    mv current/todo/learn-how-to-use-agl-cmd-line.yml current/done
+    agl mv current/todo/learn-how-to-use-agl-cmd-line.yml current/done
 
 To add a task to the current "todo" list one can use the ``-c`` argument
 (mnemonic current).
@@ -103,9 +113,7 @@ It is also possible to add team members to your project.
 
 Team members  are stored in a ``.team.yml`` file.
 
-You can then associate a task with a primary contact. (This may not be
-very agile in that anyone is meant to be able to pick up any task, but I find
-that it can be useful.)
+You can then associate a task with a primary contact.
 
 .. code-block:: bash
 
@@ -115,7 +123,8 @@ In the above ``-p`` is the short hand for ``--primary-contact`` and
 ``-e`` is short hand for ``--theme``.
 
 Note that the ``agl`` tool simply creates text files. It can be therefore be
-used together with ``git``. It can be quite satisfying to have the agile
+used together with ``git``. In fact all of the commands above automatically
+have Git integration built-in. It can be very satisfying to have the agile
 project management files under version control on GitHub.
 
 Once you have had your sprint review meeting and all the relevant
@@ -131,11 +140,18 @@ todays date using a year-month-day scheme.
 
 .. code-block:: bash
 
-    mv current/todo past_sprints/2016-06-19
+    agl mv current/todo past_sprints/2016-06-19
 
 
 Release notes
 -------------
+
+0.4.0
+~~~~~
+
+- *Added Git integration*
+- Added ``agl mv`` command
+- Fixed defect where adding to an empty config file caused and iteration error
 
 0.3.0
 ~~~~~

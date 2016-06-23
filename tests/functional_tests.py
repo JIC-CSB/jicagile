@@ -52,13 +52,15 @@ class BasicWorkflowFunctionalTests(unittest.TestCase):
         self.assertTrue(isinstance(project, jicagile.Project))
 
         # We can add a task to the backlog.
-        task = project.add_task(u"Create agile tool.", 5)
+        task, fpath = project.add_task(u"Create agile tool.", 5)
         self.assertEqual(task["title"], u"Create agile tool.")
         self.assertEqual(task["storypoints"], 5)
 
         # The task has also been written to file.
-        fpath = os.path.join(backlog_dir, "create-agile-tool.yml")
         self.assertTrue(os.path.isfile(fpath))
+        self.assertEqual(fpath,
+                         os.path.join(backlog_dir,
+                                      "create-agile-tool.yml"))
 
         # The task is in yaml file format.
         task_from_file = jicagile.Task.from_file(fpath)
@@ -77,15 +79,19 @@ class BasicWorkflowFunctionalTests(unittest.TestCase):
         self.assertEqual(task_from_file["primary_contact"], "TO")
 
         # It is also possible to add a task to the current sprint.
-        task = project.add_task(u"Say hello now.", 1,
+        task, fpath = project.add_task(u"Say hello now.", 1,
                                 primary_contact="TO", current=True)
         self.assertEqual(task["title"], u"Say hello now.")
         self.assertEqual(task["storypoints"], 1)
         self.assertEqual(task["primary_contact"], "TO")
 
         # The task has also been written to file.
-        fpath = os.path.join(self.tmp_dir, "current", "todo", "say-hello-now.yml")
         self.assertTrue(os.path.isfile(fpath))
+        self.assertEqual(fpath,
+                         os.path.join(self.tmp_dir,
+                                      "current",
+                                      "todo",
+                                      "say-hello-now.yml"))
 
 
 class ProjectFunctionalTests(unittest.TestCase):
@@ -229,8 +235,8 @@ class TaskCollectionFunctionalTests(unittest.TestCase):
     def test_from_directory(self):
         import jicagile
         project = jicagile.Project(self.tmp_dir)
-        task1 = project.add_task("Basic task", 1)
-        task2 = project.add_task("Complex task", 8)
+        task1, fpath = project.add_task("Basic task", 1)
+        task2, fpath = project.add_task("Complex task", 8)
         expected = jicagile.TaskCollection()
         expected.extend([task1, task2])
 

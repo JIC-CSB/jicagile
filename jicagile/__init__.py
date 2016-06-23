@@ -128,9 +128,10 @@ class Project(object):
         directory = self.backlog_directory
         if current:
             directory = self.current_todo_directory
-        with open(task.fpath(directory), "w") as fh:
+        fpath = task.fpath(directory)
+        with open(fpath, "w") as fh:
             yaml.dump(task, fh, explicit_start=True, default_flow_style=False)
-        return task
+        return task, fpath
 
     def edit_task(self,
                   fpath,

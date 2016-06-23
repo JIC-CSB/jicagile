@@ -123,11 +123,15 @@ class CLI(object):
 
     def edit(self, args):
         """Edit a task."""
-        self.project.edit_task(args.fpath,
-                               args.title,
-                               args.storypoints,
-                               args.primary_contact,
-                               args.theme)
+        task, fpath = self.project.edit_task(args.fpath,
+                                             args.title,
+                                             args.storypoints,
+                                             args.primary_contact,
+                                             args.theme)
+        if fpath != args.fpath:
+            process = subprocess.Popen(["mv", args.fpath, fpath])
+            process.communicate()
+
 
     def list(self, args):
         """List tasks."""

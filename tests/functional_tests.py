@@ -335,17 +335,41 @@ class CLIFunctionalTests(unittest.TestCase):
 
         args = cli.parse_args(["edit",
                               task_fpath,
-                              "-t", "Complicated task",
-                              "-s", "8",
+                              "-s", "3",
                               "-p", "TO",
                               "-e", "admin"])
         cli.run(args)
 
         task_from_file = jicagile.Task.from_file(task_fpath)
-        self.assertEqual(task_from_file["title"], "Complicated task")
-        self.assertEqual(task_from_file["storypoints"], 8)
+        self.assertEqual(task_from_file["title"], "Basic task")
+        self.assertEqual(task_from_file["storypoints"], 3)
         self.assertEqual(task_from_file["primary_contact"], "TO")
         self.assertEqual(task_from_file["theme"], "admin")
+
+    def test_edit_title_without_git(self):
+        import jicagile
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["add", "Basic task", "1"])
+        cli.run(args)
+
+        backlog_dir = os.path.join(self.tmp_dir, "backlog")
+        org_task_fpath = os.path.join(backlog_dir, "basic-task.yml")
+        new_task_fpath = os.path.join(backlog_dir, "complicated-task.yml")
+
+        self.assertTrue(os.path.isfile(org_task_fpath))
+        self.assertFalse(os.path.isfile(new_task_fpath))
+
+        args = cli.parse_args(["edit",
+                              org_task_fpath,
+                              "-t", "Complicated task"])
+        cli.run(args)
+
+        self.assertFalse(os.path.isfile(org_task_fpath))
+        self.assertTrue(os.path.isfile(new_task_fpath))
+
+        task_from_file = jicagile.Task.from_file(new_task_fpath)
+        self.assertEqual(task_from_file["title"], "Complicated task")
 
     def test_list(self):
         import jicagile

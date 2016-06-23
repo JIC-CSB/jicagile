@@ -178,37 +178,6 @@ class GitIntegrationTests(unittest.TestCase):
         patch_popen.assert_called_with(["git", "add", fpath])
 
     @mock.patch('subprocess.Popen')
-    def test_theme_without_git(self, patch_popen):
-        process_mock = mock.MagicMock()
-        attrs = {"communicate.return_value": None}
-        process_mock.configure(**attrs)
-        patch_popen.return_value = process_mock
-        from jicagile.cli import CLI
-        cli = CLI()
-        args = cli.parse_args(["theme", "add", "admin", "stuff to do"])
-
-        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
-            mock_is_git_repo.return_value = False
-            cli.run(args)
-        patch_popen.assert_not_called()
-
-    @mock.patch('subprocess.Popen')
-    def test_theme_with_git(self, patch_popen):
-        process_mock = mock.MagicMock()
-        attrs = {"communicate.return_value": None}
-        process_mock.configure(**attrs)
-        patch_popen.return_value = process_mock
-        from jicagile.cli import CLI
-        cli = CLI()
-        args = cli.parse_args(["theme", "add", "admin", "stuff to do"])
-
-        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
-            mock_is_git_repo.return_value = True
-            cli.run(args)
-        fpath = os.path.join(".", ".themes.yml")
-        patch_popen.assert_called_with(["git", "add", fpath])
-
-    @mock.patch('subprocess.Popen')
     def test_mv_without_git(self, patch_popen):
         process_mock = mock.MagicMock()
         attrs = {"communicate.return_value": None}
@@ -239,3 +208,33 @@ class GitIntegrationTests(unittest.TestCase):
 
         patch_popen.assert_called_with(["git", "mv", "path/to/move", "/dest/"])
 
+    @mock.patch('subprocess.Popen')
+    def test_theme_without_git(self, patch_popen):
+        process_mock = mock.MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["theme", "add", "admin", "stuff to do"])
+
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = False
+            cli.run(args)
+        patch_popen.assert_not_called()
+
+    @mock.patch('subprocess.Popen')
+    def test_theme_with_git(self, patch_popen):
+        process_mock = mock.MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["theme", "add", "admin", "stuff to do"])
+
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = True
+            cli.run(args)
+        fpath = os.path.join(".", ".themes.yml")
+        patch_popen.assert_called_with(["git", "add", fpath])

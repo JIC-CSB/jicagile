@@ -2,6 +2,7 @@
 
 import unittest
 import sys
+import os.path
 from contextlib import contextmanager
 from StringIO import StringIO
 
@@ -84,6 +85,37 @@ class AddCommandUnitTests(unittest.TestCase):
 
         args = cli.parse_args(["add", "Simple task", "1", "-e", "sysadmin"])
         self.assertEqual(args.theme, "sysadmin")
+
+    @mock.patch('subprocess.Popen')
+    def test_mv_without_git(self, patch_popen):
+        process_mock = MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["add", "Simple task", "1"])
+
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = False
+            cli.run(args)
+        patch_popen.assert_not_called()
+
+    @mock.patch('subprocess.Popen')
+    def test_mv_without_git(self, patch_popen):
+        process_mock = MagicMock()
+        attrs = {"communicate.return_value": None}
+        process_mock.configure(**attrs)
+        patch_popen.return_value = process_mock
+        from jicagile.cli import CLI
+        cli = CLI()
+        args = cli.parse_args(["add", "Simple task", "1"])
+
+        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
+            mock_is_git_repo.return_value = True
+            cli.run(args)
+        fpath = os.path.join(".", "backlog", "simple-task.yml")
+        patch_popen.assert_called_with(["git", "add", fpath])
 
 
 class EditCommandUnitTests(unittest.TestCase):

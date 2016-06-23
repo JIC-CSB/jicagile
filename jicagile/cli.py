@@ -111,11 +111,15 @@ class CLI(object):
 
     def add(self, args):
         """Add a task."""
-        self.project.add_task(args.title,
-                              args.storypoints,
-                              args.primary_contact,
-                              args.theme,
-                              args.current)
+        task, fpath = self.project.add_task(args.title,
+                                            args.storypoints,
+                                            args.primary_contact,
+                                            args.theme,
+                                            args.current)
+        if self.is_git_repo:
+            process = subprocess.Popen(["git", "add", fpath])
+            process.communicate()
+
 
     def edit(self, args):
         """Edit a task."""

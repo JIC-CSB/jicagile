@@ -5,9 +5,14 @@ import sys
 import os.path
 from contextlib import contextmanager
 from StringIO import StringIO
+import tempfile
+import shutil
 
 import mock
 from mock import MagicMock
+
+CUR_DIR = os.getcwd()
+
 
 @contextmanager
 def capture_sys_output():
@@ -22,6 +27,16 @@ def capture_sys_output():
 
 class RunCommandTest(unittest.TestCase):
 
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
+
     def test_run(self):
         from jicagile.cli import CLI
         cli = CLI()
@@ -33,6 +48,16 @@ class RunCommandTest(unittest.TestCase):
 
 
 class AddCommandUnitTests(unittest.TestCase):
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_basic_usage(self):
         from jicagile.cli import CLI
@@ -86,39 +111,18 @@ class AddCommandUnitTests(unittest.TestCase):
         args = cli.parse_args(["add", "Simple task", "1", "-e", "sysadmin"])
         self.assertEqual(args.theme, "sysadmin")
 
-    @mock.patch('subprocess.Popen')
-    def test_add_without_git(self, patch_popen):
-        process_mock = MagicMock()
-        attrs = {"communicate.return_value": None}
-        process_mock.configure(**attrs)
-        patch_popen.return_value = process_mock
-        from jicagile.cli import CLI
-        cli = CLI()
-        args = cli.parse_args(["add", "Simple task", "1"])
-
-        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
-            mock_is_git_repo.return_value = False
-            cli.run(args)
-        patch_popen.assert_not_called()
-
-    @mock.patch('subprocess.Popen')
-    def test_add_with_git(self, patch_popen):
-        process_mock = MagicMock()
-        attrs = {"communicate.return_value": None}
-        process_mock.configure(**attrs)
-        patch_popen.return_value = process_mock
-        from jicagile.cli import CLI
-        cli = CLI()
-        args = cli.parse_args(["add", "Simple task", "1"])
-
-        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
-            mock_is_git_repo.return_value = True
-            cli.run(args)
-        fpath = os.path.join(".", "backlog", "simple-task.yml")
-        patch_popen.assert_called_with(["git", "add", fpath])
-
 
 class EditCommandUnitTests(unittest.TestCase):
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_basic_usage(self):
         import jicagile
@@ -142,6 +146,16 @@ class EditCommandUnitTests(unittest.TestCase):
 
 class ListCommandUnitTests(unittest.TestCase):
 
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
+
     def test_basic_usage(self):
         from jicagile.cli import CLI
         cli = CLI()
@@ -160,6 +174,16 @@ class ListCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.primary_contact, "TO")
 
 class ThemeCommandUnitTests(unittest.TestCase):
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_add_usage(self):
         from jicagile.cli import CLI
@@ -180,6 +204,16 @@ class ThemeCommandUnitTests(unittest.TestCase):
 
 
 class TeamMemberCommandUnitTests(unittest.TestCase):
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
 
     def test_add_usage(self):
         from jicagile.cli import CLI
@@ -202,6 +236,16 @@ class TeamMemberCommandUnitTests(unittest.TestCase):
 
 class MvCommandUnitTests(unittest.TestCase):
 
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+        if not os.path.isdir(self.tmp_dir):
+            os.mkdir(self.tmp_dir)
+        os.chdir(self.tmp_dir)
+
+    def tearDown(self):
+        os.chdir(CUR_DIR)
+        shutil.rmtree(self.tmp_dir)
+
     def test_mv_usage(self):
         from jicagile.cli import CLI
         cli = CLI()
@@ -209,37 +253,6 @@ class MvCommandUnitTests(unittest.TestCase):
         self.assertEqual(args.command, "mv")
         self.assertEqual(args.src, "path/to/move")
         self.assertEqual(args.dest, "/dest/")
-
-    @mock.patch('subprocess.Popen')
-    def test_mv_without_git(self, patch_popen):
-        process_mock = MagicMock()
-        attrs = {"communicate.return_value": None}
-        process_mock.configure(**attrs)
-        patch_popen.return_value = process_mock
-        from jicagile.cli import CLI
-        cli = CLI()
-        args = cli.parse_args(["mv", "path/to/move", "/dest/"])
-
-        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
-            mock_is_git_repo.return_value = False
-            cli.run(args)
-        patch_popen.assert_called_with(["mv", "path/to/move", "/dest/"])
-
-    @mock.patch('subprocess.Popen')
-    def test_mv_with_git(self, patch_popen):
-        process_mock = MagicMock()
-        attrs = {"communicate.return_value": None}
-        process_mock.configure(**attrs)
-        patch_popen.return_value = process_mock
-        from jicagile.cli import CLI
-        cli = CLI()
-
-        args = cli.parse_args(["mv", "path/to/move", "/dest/"])
-        with mock.patch("jicagile.cli.CLI.is_git_repo", new_callable=mock.PropertyMock) as mock_is_git_repo:
-            mock_is_git_repo.return_value = True
-            cli.run(args)
-
-        patch_popen.assert_called_with(["git", "mv", "path/to/move", "/dest/"])
 
 
 
